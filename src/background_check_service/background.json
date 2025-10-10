@@ -1,0 +1,6 @@
+{
+    "stark": {"war_risk": 0.1, "credit_trend": 0.1},
+    "lannister": {"war_risk": 0.4, "credit_trend": 0.2},
+    "targaryen": {"war_risk": 0.7, "credit_trend": -0.2},
+    "nightswatch": {"war_risk": 0.5, "credit_trend": -0.1}
+}

@@ -1,0 +1,32 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python Debugger: Loan Stats MCP",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "src.background_check_service.main",
+            "env": {
+                "PORT": "8002",
+            },
+            "envFile": "${workspaceFolder}/.env",
+            "python": "${cwd}/.venv/bin/python3",
+
+        },
+         {
+            "name": "Python Debugger: Iron Bank Remote Agent",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "uvicorn",
+            "env": {
+                "PORT": "8001",
+            },
+            "python": "${cwd}/.venv/bin/python3",
+            "envFile": "${workspaceFolder}/.env",
+            "args": ["src.adk_ironbank.agent:a2a_app","--reload", "--port", "8001", "--host", "localhost"]
+        },
+    ]
+}
