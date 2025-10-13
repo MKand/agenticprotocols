@@ -11,9 +11,9 @@ os.environ["GOOGLE_CLOUD_PROJECT"] = GOOGLE_CLOUD_PROJECT
 os.environ["GOOGLE_GENAI_USE_VERTEXAI"] = GOOGLE_GENAI_USE_VERTEXAI
 
 root_agent = RemoteA2aAgent(
-    name="iron_bank_agent",
+    name="iron_bank_agent_local",
     description=(
-        "The agent of the Iron Bank of Braavos"
+        "The agent of the Iron Bank of Braavos. "
     ),
     agent_card=f"http://localhost:8001/{AGENT_CARD_WELL_KNOWN_PATH}",
 )
