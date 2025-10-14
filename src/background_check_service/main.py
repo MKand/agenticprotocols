@@ -20,11 +20,13 @@ def load_stats():
         return json.load(f)
 
 def _get_stats(entity_name: str):
+    entity_name = entity_name.lower()
     global BACKGROUND_STATS
     if BACKGROUND_STATS is None:    
         BACKGROUND_STATS = load_stats()
-    data = BACKGROUND_STATS[entity_name]
-    if data is None:
+    try:
+        data = BACKGROUND_STATS[entity_name]
+    except KeyError:
         return LoanRiskProfile(entity_name=entity_name, war_risk=0.5, reputation=0.0)
     return LoanRiskProfile(entity_name=entity_name, war_risk=data["war_risk"], reputation=data["reputation"])
 
