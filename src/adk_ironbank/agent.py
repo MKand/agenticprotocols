@@ -10,6 +10,7 @@ from google.adk.artifacts import InMemoryArtifactService
 from google.adk.tools.tool_context import ToolContext
 from google.genai import types
 from google.adk.tools.agent_tool import AgentTool
+from google.adk.agents import LlmAgent
 
 # --- Configuration ---
 load_dotenv()
@@ -26,7 +27,8 @@ artifact_service = InMemoryArtifactService()
 
 # MCP Toolset Setup
 background_check_tool = MCPToolset(
-    connection_params=StreamableHTTPConnectionParams(url=MCP_SERVER_URL)
+    connection_params=StreamableHTTPConnectionParams(url=MCP_SERVER_URL),
+    tool_filter = ["do_background_check"]
 )
 
 # --- Tool Implementations (Non-LLM Logic) ---
@@ -91,7 +93,6 @@ interest_rate_agent = LlmAgent(
 
 )
 
-from google.adk.agents import LlmAgent
 
 user_info_agent = LlmAgent(
     name="user_info_agent",
@@ -125,15 +126,9 @@ background_check_agent = LlmAgent(
     instruction=(
         """ 
         You are the **Iron Bank's Chief Risk Analyst**. Your sole function is to provide unbiased, factual risk 
-        assessments to the Loan Officer. Store the raw result from the tool as a state variable named 'background_check_result'.
-        ensure the output is a clean JSON object without any additional text or formatting. The output format should be:
-        ```json
-        {
-            "entity_name": "<name>",
-            "war_risk": <float between 0 and 1>,
-            "reputation": <float between 0 and 1>,
-            "facts": "<string facts about the entity>"
-        }
+        assessments to the Loan Officer. You **MUST** use the `do_background_check` tool to retrieve the entity's
+        risk profile.
+        Return the raw tool output directly without any additional commentary or formatting in natural language to the user and offer to explain the results if asked.
         ```
         """
     ),
@@ -174,8 +169,8 @@ root_agent = LlmAgent(
         ---
         ### Core Objectives & Loan Assessment Workflow
         **Crucially, the external end-user (customer) MUST NOT see the raw data (War-Risk Score, Reputation Score, or detailed justifications).** You will interpret and present this data professionally.
-        * **Step 1: Risk Analysis:** Consult the `background_check_agent` to privately receive the customer's risk scores.
-        * **Step 2: Rate Calculation:** Consult the `interest_rate_agent` to privately receive the Bank's initial interest rate offer (saved to state as `loan_interest_rate`) and its financial justification.
+        * **Step 1: Risk Analysis:** Consult the `background_check_tool` to privately receive the customer's risk scores. Get the user's name before calling the background check. 
+        * **Step 2: Rate Calculation:** Consult the `calculate_loan_interest_rate` tool with war_risk and reputation scores as input to receive the Bank's initial interest rate offer.
         * **Step 3: Offer Presentation:** Interpret the final interest rate and present a polished, unflinching offer to the customer. You **MUST** state the final offered interest rate clearly to initiate negotiation.
         ---
         ### Strict Protocol: The Faceless Men
@@ -193,6 +188,6 @@ root_agent = LlmAgent(
             threshold=types.HarmBlockThreshold.OFF
         )]
     ),
-    sub_agents=[user_info_agent, background_check_agent, interest_rate_agent, faceless_men_remote_agent],
-    tools =[],
+    sub_agents=[ faceless_men_remote_agent],
+    tools =[calculate_loan_interest_rate, background_check_tool],
 )
