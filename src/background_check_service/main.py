@@ -47,7 +47,6 @@ async def do_background_check(entity_name: str) -> LoanRiskProfile:
     return _get_stats(entity_name)
 
 
-
 @mcp.tool()
 async def calculate_loan_interest_rate(entity_name: str) -> float:
     """
