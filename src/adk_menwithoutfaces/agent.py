@@ -3,6 +3,7 @@ from google.adk.agents import LlmAgent
 from google.adk.a2a.utils.agent_to_a2a import to_a2a
 import os
 from dotenv import load_dotenv
+from a2a.types import AgentCard, AgentSkill, AgentCapabilities
 
 load_dotenv()
 
@@ -14,6 +15,25 @@ os.environ["GOOGLE_CLOUD_LOCATION"] = GOOGLE_CLOUD_LOCATION
 os.environ["GOOGLE_CLOUD_PROJECT"] = GOOGLE_CLOUD_PROJECT
 os.environ["GOOGLE_GENAI_USE_VERTEXAI"] = GOOGLE_GENAI_USE_VERTEXAI
 
+capabilities = AgentCapabilities(streaming=True, tools=True)
+
+agent_card = AgentCard(
+    name="men_without_faces_agent",
+    description="Clandestine agent for the Men without Faces organization.",
+    skills=[
+        AgentSkill(
+            name="men_without_faces",
+            id ="discreet_services",
+            description="Arranges discreet services that are not directly acknowledged by the Metal Bank.",
+            tags=[]
+        )
+    ],
+    capabilities=capabilities,
+    url=f'http://localhost:{os.environ.get("PORT", 8001)}',
+    version="0.1.0",
+    default_input_modes=["text"],
+    default_output_modes=["text"]
+)   
 root_agent = LlmAgent(
     name="men_without_faces_agent",
      description=(
@@ -32,4 +52,4 @@ root_agent = LlmAgent(
         tools=[],
 )
 
-a2a_app = to_a2a(root_agent, port=int(os.environ.get("PORT", 8001)), host="0.0.0.0", protocol="http")
+a2a_app = to_a2a(root_agent, port=int(os.environ.get("PORT", 8001)), host="0.0.0.0", protocol="http", agent_card=agent_card)
