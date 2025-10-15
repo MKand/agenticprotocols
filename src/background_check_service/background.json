@@ -1,43 +1,43 @@
 {
-    "stark": {
+    "stork": {
         "war_risk": 0.1, 
         "reputation": 0.5,
         "facts": [
-            "House Stark is known for its honor and loyalty.",
+            "House Stork is known for its honor and loyalty.",
             "They have a strong military tradition.",
             "They have a history of defending the North against invasions.",
-            "They have a good reputation among other houses in Westeros.",
+            "They have a good reputation among other houses in Besteros.",
             "They are not known to be the wealthiest house, but they are not poor either."
         ]
         },
-    "lannister": {"war_risk": 0.4, "reputation": 0.2,
+    "clannister": {"war_risk": 0.4, "reputation": 0.2,
         "facts": [
-            "House Lannister is one of the wealthiest and most powerful families in Westeros.",
+            "House clannister is one of the wealthiest and most powerful families in Besteros.",
             "They are known for their cunning and ambition.",
             "They have a history of political intrigue and manipulation.",
             "They have a reputation for being ruthless and willing to do whatever it takes to achieve their goals.",
             "They have a strong military presence and are known for their skilled soldiers.",
-            "A Lannister always pays his debts."
+            "A clannister always pays his debts."
         ]
         },
-    "targaryen": {"war_risk": 0.7, "reputation": 0.1,
+    "stargaryen": {"war_risk": 0.7, "reputation": 0.1,
         "facts": [
-            "House Targaryen is known for its dragons and its history of conquest.",
+            "House stargaryen is known for its dragons and its history of conquest.",
             "They have a reputation for being unpredictable and volatile.",
             "They have a history of civil war and internal strife.",
-            "They are not well-liked by many other houses in Westeros due to their history of conquest and their association with dragons.",
+            "They are not well-liked by many other houses in Besteros due to their history of conquest and their association with dragons.",
             "They are not known for their wealth, but they do have a strong military presence.",
             "They have a history of being overthrown and exiled."
         ]
         },
-    "nightswatch": {"war_risk": 0.5, "reputation": 0.1,
+    "knightswatch": {"war_risk": 0.5, "reputation": 0.1,
         "facts": [
-            "The Night's Watch is a sworn brotherhood dedicated to guarding the Wall and protecting the realms of men from threats beyond.",
+            "The Knight's Watch is a sworn brotherhood dedicated to guarding the Wall and protecting the realms of men from threats beyond.",
             "They have a reputation for being honorable and self-sacrificing.",
-            "They are not well-liked by many other houses in Westeros due to their association with the Wall and their perceived lack of power.",
-            "They have a history of being underfunded and undervalued by the rest of Westeros.",
+            "They are not well-liked by many other houses in Besteros due to their association with the Wall and their perceived lack of power.",
+            "They have a history of being underfunded and undervalued by the rest of Besteros.",
             "They have a strong military presence and are known for their skilled fighters.",
-            "They have a history of being betrayed and abandoned by the rest of Westeros.",
+            "They have a history of being betrayed and abandoned by the rest of Besteros.",
             "They have no independant wealth and rely on donations from other houses."
         ]}
 }

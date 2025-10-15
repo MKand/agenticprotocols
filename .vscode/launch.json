@@ -17,7 +17,7 @@
 
         },
          {
-            "name": "Python Debugger: Faceless Men Remote Agent",
+            "name": "Python Debugger: Men Without Faces Remote Agent",
             "type": "debugpy",
             "request": "launch",
             "module": "uvicorn",
@@ -26,7 +26,7 @@
             },
             "python": "${cwd}/.venv/bin/python3",
             "envFile": "${workspaceFolder}/.env",
-            "args": ["src.adk_facelessmen.agent:a2a_app","--reload", "--port", "8001", "--host", "localhost"]
+            "args": ["src.adk_menwithoutfaces.agent:a2a_app","--reload", "--port", "8001", "--host", "localhost"]
         },
     ]
 }

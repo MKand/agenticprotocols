@@ -1,6 +1,3 @@
-from fastapi.openapi.utils import get_openapi
-from starlette.responses import PlainTextResponse
-from starlette.requests import Request
 from src.shared.models.loans import LoanRiskProfile
 from fastmcp import FastMCP
 import logging
