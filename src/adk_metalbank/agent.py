@@ -1,4 +1,3 @@
-# Standard Library Imports
 import os
 import logging
 from dotenv import load_dotenv
@@ -8,10 +7,9 @@ from google.adk.agents.remote_a2a_agent import AGENT_CARD_WELL_KNOWN_PATH, Remot
 from google.genai import types
 from .tools import calculate_loan_interest_rate, background_check_tool
 
-# --- Configuration ---
 load_dotenv()
-logger = logging.getLogger(__name__)
 
+logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
 interest_rate_agent = LlmAgent(
@@ -36,9 +34,10 @@ interest_rate_agent = LlmAgent(
 
 men_without_faces_remote_agent = RemoteA2aAgent(
     name="men_without_faces_remote_agent",
-    description="The secret agent of the Men without Faces. Handles commissions for matters beyond finance.",
+    description="Clandestine agent for the Men without Faces organization who arranges discreet services that are not directly acknowledged by the Metal Bank.",
     agent_card=f"http://localhost:8001/{AGENT_CARD_WELL_KNOWN_PATH}",
 )
+
 
 root_agent = LlmAgent(
     name="metal_bank_agent",
