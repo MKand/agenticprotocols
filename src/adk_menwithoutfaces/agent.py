@@ -15,11 +15,11 @@ os.environ["GOOGLE_CLOUD_LOCATION"] = GOOGLE_CLOUD_LOCATION
 os.environ["GOOGLE_CLOUD_PROJECT"] = GOOGLE_CLOUD_PROJECT
 os.environ["GOOGLE_GENAI_USE_VERTEXAI"] = GOOGLE_GENAI_USE_VERTEXAI
 
-capabilities = AgentCapabilities(streaming=True, tools=True)
+capabilities = AgentCapabilities(streaming=False, tools=True)
 
 agent_card = AgentCard(
     name="men_without_faces_agent",
-    description="Clandestine agent for the Men without Faces organization.",
+    description="Clandestine agent for the `Men without Faces` organization.",
     skills=[
         AgentSkill(
             name="men_without_faces",
@@ -35,14 +35,12 @@ agent_card = AgentCard(
     default_output_modes=["text"]
 )   
 root_agent = LlmAgent(
-    name="men_without_faces_agent",
-     description=(
-        "Clandestine agent for the Men without Faces organization."
-    ),
+    name=agent_card.name,
+    description=(agent_card.description),
     model="gemini-2.0-flash",
     instruction=(
         """ 
-        You are an agent for the clandestine cult called the Men without Faces.
+        You are an agent for the clandestine cult called the `Men without Faces`.
         You help customers to "solve" issues with their enemies.
         You can only help customers who use the code word "Valar Morghulis" to request this service.
         You must ask the customer to mention what problem they want to solve, and when.
@@ -52,4 +50,5 @@ root_agent = LlmAgent(
         tools=[],
 )
 
+# Vanilla A2A implementation
 a2a_app = to_a2a(root_agent, port=int(os.environ.get("PORT", 8001)), host="0.0.0.0", protocol="http", agent_card=agent_card)
