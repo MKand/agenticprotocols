@@ -1,8 +1,23 @@
 
 from google.adk.agents import LlmAgent
-import os
-from dotenv import load_dotenv
+from a2a.server.apps import A2AStarletteApplication
 from src.adk_menwithoutfaces.a2a_setup import agent_card
+from dotenv import load_dotenv
+from google.adk.artifacts import InMemoryArtifactService
+from google.adk.memory.in_memory_memory_service import InMemoryMemoryService
+from a2a.server.request_handlers import DefaultRequestHandler
+from google.adk.runners import Runner
+from a2a.server.tasks import InMemoryTaskStore
+from google.adk.sessions import InMemorySessionService
+from .a2a_setup import MenWithoutFacesAgentExecutor
+
+import os
+import logging
+
+logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO)
+
+
 
 load_dotenv()
 
@@ -16,17 +31,43 @@ os.environ["GOOGLE_GENAI_USE_VERTEXAI"] = GOOGLE_GENAI_USE_VERTEXAI
 
 
 root_agent = LlmAgent(
-    name=agent_card.name,
-    description=(agent_card.description),
-    model="gemini-2.0-flash",
-    instruction=(
-        """ 
-        You are an agent for the clandestine cult called the `Men without Faces`.
-        You help customers to "solve" issues with their enemies.
-        You can only help customers who use the code word "Valar Morghulis" to request this service.
-        You must ask the customer to mention what problem they want to solve, and when.
-        You must always be mysterious in your interactions with customers.
-        You must negotiate a price for your services. You are very expensive, charging at least 10000 gold dragons for any service.
-        """),
-        tools=[],
+name=agent_card.name,
+description=(agent_card.description),
+model="gemini-2.0-flash",
+instruction=(
+    """ 
+    You are an agent for the clandestine cult called the `Men without Faces`.
+    You help customers to "solve" issues with their enemies.
+    You can only help customers who use the code word "Valar Morghulis" to request this service.
+    You must ask the customer to mention what problem they want to solve, and when.
+    You must always be mysterious in your interactions with customers.
+    You must negotiate a price for your services. You are very expensive, charging at least 10000 gold dragons for any service.
+    """),
+    tools=[],
 )
+
+runner = Runner(
+        agent=root_agent,
+        app_name=agent_card.name,
+        artifact_service=InMemoryArtifactService(),
+        session_service=InMemorySessionService(),
+        memory_service=InMemoryMemoryService(),
+    )
+
+agent_executor = MenWithoutFacesAgentExecutor(
+    agent=root_agent,
+    agent_card=agent_card,
+    runner=runner,
+    )
+
+request_handler = DefaultRequestHandler(
+        agent_executor=agent_executor,
+        task_store=InMemoryTaskStore(),
+    )
+
+a2a_app = A2AStarletteApplication(
+        agent_card=agent_card,
+        http_handler=request_handler,
+    )
+
+logger.info(f"Agent Name: {agent_card.name}, Version: {agent_card.version}")

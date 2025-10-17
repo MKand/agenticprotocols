@@ -1,11 +1,11 @@
 from a2a.types import AgentCard, AgentSkill, AgentCapabilities
+from a2a.utils import new_agent_text_message
 from a2a.server.agent_execution import AgentExecutor, RequestContext 
 from a2a.server.events import EventQueue
 from google.adk.sessions import Session
 from google.adk.runners import Runner
 from google.adk.agents import Agent
 from google.genai import types
-from typing import AsyncGenerator
 
 import os
 import logging
@@ -47,29 +47,35 @@ class MenWithoutFacesAgentExecutor(AgentExecutor):
 
 
     async def execute(self, request_context: RequestContext, event_queue: EventQueue,) -> None:
-        # This gets the necessary information from the request context, performs the necessary operations, 
-        # and then publishes a Message or Task onto the EventQueue
+        try:
+            # This gets the necessary information from the request context, performs the necessary operations, 
+            # and then publishes a Message or Task onto the EventQueue
 
-        # Lets inspect the metadata of the request. 
-        task_id = request_context.task_id or "default_task_id"
-        context_id = request_context.context_id or "default_context_id"
-        user_id = "self" # setting a default 
+            # Lets inspect the metadata of the request. 
+            task_id = request_context.task_id or "default_task_id"
+            context_id = request_context.context_id or "default_context_id"
+            user_id = "self" # setting a default 
 
-        logging.info(f"The context id is {context_id}")
-        logging.info(f"The task id is {task_id}")
+            logging.info(f"The context id is {context_id}")
+            logging.info(f"The task id is {task_id}")
 
-        self._get_adk_session(user_id, context_id)
-        
-        # Let's inspect the user input
-        user_message = self._inspect_input(request_context)
+            await self._get_adk_session(user_id, context_id)
+            
+            # Let's inspect the user input
+            user_message = self._inspect_input(request_context)
 
-        # Do some processing on the user message through the Agent
+            # Do some processing on the user message through the Agent
+            message_text = await self._run_agent(user_message, event_queue, user_id, context_id)
 
+            # Send message back to calling agent
+            await self._send_response(event_queue, request_context, message_text)
 
+        except Exception as error:
+            self._handle_error(event_queue, request_context, error)
 
     async def _run_agent(self, user_message: str, event_queue: EventQueue, user_id: str, session_id: str) -> str:
-        message_content = types.Content(role="user", parts=[types.TextPart(text=user_message)])
-       
+        message_content = types.Content(role="user", parts=[types.Part(text=user_message)])
+    
         logger.debug(f"Running ADK agent {self.agent.name} with session {session_id}")
 
         # The runner emits events as it continues to process the user's request
@@ -101,6 +107,7 @@ class MenWithoutFacesAgentExecutor(AgentExecutor):
                 )
 
         return final_message_text
+
     
     async def cancel(self, request_context: RequestContext, event_queue: EventQueue):
         context_id = request_context.context_id or "default_context_id"
@@ -117,7 +124,7 @@ class MenWithoutFacesAgentExecutor(AgentExecutor):
 
     def _inspect_input(self, request_context: RequestContext) -> str:
         user_message = request_context.get_user_input()
-        logging.info(f"The user message is {user_message}")
+        logging.info(f"The user message is: {user_message}")
         return user_message
 
     async def _get_adk_session(self, user_id: str, session_id: str) -> None:
@@ -133,3 +140,37 @@ class MenWithoutFacesAgentExecutor(AgentExecutor):
                 state={},
             )
             logger.info(f"Created new ADK session: {session_id} for {self.agent.name}")
+
+    
+    async def _send_response(
+        self, event_queue: EventQueue, context: RequestContext, message_text: str
+    ) -> None:
+        """Send the response back via the event queue."""
+        logger.info(f"Sending response for task {context.task_id}")
+        await event_queue.enqueue_event(
+            new_agent_text_message(
+                text=message_text,
+                context_id=context.context_id,
+                task_id=context.task_id,
+            )
+        )
+
+    def _handle_error(
+        self,
+        event_queue: EventQueue,
+        context: RequestContext,
+        error: Exception,
+    ) -> None:
+        """Handle errors and send error response."""
+        logger.error(
+            f"Error speaking to Men without Faces agent: {str(error)}",
+            exc_info=True,
+        )
+        error_message_text = f"Error speaking to Men without Faces agent: {str(error)}"
+        event_queue.enqueue_event(
+            new_agent_text_message(
+                text=error_message_text,
+                context_id=context.context_id,
+                task_id=context.task_id,
+            )
+        )
