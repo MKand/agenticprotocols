@@ -1,3 +1,4 @@
 google-adk
 google-adk[a2a]
 fastmcp
+sqlmodel

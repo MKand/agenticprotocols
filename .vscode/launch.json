@@ -5,7 +5,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Python Debugger: Loan Stats MCP",
+            "name": "Python Debugger: Background Stats MCP",
             "type": "debugpy",
             "request": "launch",
             "module": "src.background_check_service.main",
@@ -14,7 +14,17 @@
             },
             "envFile": "${workspaceFolder}/.env",
             "python": "${cwd}/.venv/bin/python3",
-
+        },
+        {
+            "name": "Python Debugger: Loan MCP",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "src.loan_service.main",
+            "env": {
+                "PORT": "8003",
+            },
+            "envFile": "${workspaceFolder}/.env",
+            "python": "${cwd}/.venv/bin/python3",
         },
          {
             "name": "Python Debugger: Men Without Faces Remote Agent",
