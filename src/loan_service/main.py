@@ -40,6 +40,7 @@ def create_loan(loan: Loan) -> Loan:
     Returns:
         The created Loan object, refreshed from the database with its new ID.
     """
+    loan.name = loan.name.lower()
     session = get_session()
     session.add(loan)
     session.commit()
@@ -70,7 +71,7 @@ def get_loans_by_name(name: str) -> List[Loan]:
         list if no loans are found for that name.
     """
     session = get_session()
-    loans = session.exec(select(Loan).where(Loan.name == name)).all()
+    loans = session.exec(select(Loan).where(Loan.name == name.lower())).all()
     return loans
 
 if __name__ == "__main__":

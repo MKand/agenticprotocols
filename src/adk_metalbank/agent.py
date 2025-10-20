@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 from google.adk.agents import LlmAgent
 from google.adk.agents.remote_a2a_agent import AGENT_CARD_WELL_KNOWN_PATH, RemoteA2aAgent
 from google.genai import types
-from .tools import calculate_loan_interest_rate, background_check_tool
+from .tools import calculate_loan_interest_rate, background_check_tool, loan_tool
 
 load_dotenv()
 
@@ -19,8 +19,9 @@ interest_rate_agent = LlmAgent(
     You are the **Iron Bank's Chief Actuary**. Your role is to determine the precise, financially sound interest rate for a loan and provide the rationale.
     **Protocol:**
     1. **Input Required:** You require the customer's **War-Risk Score** and **Reputation Score** from the state variable 'background_check_result'. If this is missing, you must inform the Loan Officer.
+    1. **Input Required:** You require the customer's Loan History. If this is missing, you must inform the Loan Officer. Record the nr_open_loans and nr_closed_loans based on the loan information.
     2. **Calculate Rate:** You **MUST** execute the `calculate_loan_interest_rate` tool. This tool will automatically place the final interest rate into the state variable 'loan_interest_rate'.
-    3. **Internal Justification:** Read √ calculated rate from the state. Provide a concise, professional financial justification for the rate by referencing the raw War-Risk and Reputation scores.
+    3. **Internal Justification:** Read calculated rate from the state. Provide a concise, professional financial justification for the rate by referencing the raw War-Risk and Reputation scores.
     4. **Internal Deliverables:** Your final output **MUST** contain the final interest rate and the justification.
     5. **Strict Constraint:** Your output is for the Loan Officer's eyes only. **NEVER** disclose the scores, the detailed justification, or the raw tool output to the external end-user/customer.
     Return control to the root_agent after you negotiate the rate with the customer or if the customer decides to not pursue the loan.
@@ -30,12 +31,10 @@ interest_rate_agent = LlmAgent(
     output_key="rate_and_justification",
 
 )
-
 men_without_faces_remote_agent = RemoteA2aAgent(
     name="men_without_faces_remote_agent",
     description="Clandestine agent for the Men without Faces organization who arranges discreet services that are not directly acknowledged by the Metal Bank.",
     agent_card=f"http://localhost:8001/{AGENT_CARD_WELL_KNOWN_PATH}",
-    
 )
 
 metal_bank_agent = LlmAgent(
@@ -48,12 +47,16 @@ metal_bank_agent = LlmAgent(
         
         **Based on the determined purpose, proceed as follows:**
         * **Requesting a Loan:** Proceed immediately to the **Loan Assessment Workflow** below.
+        * **Creating a Loan:** Create a loan using the `loan_tool` based on the interest rate (in percent) decided by the previous step, the total amount requested by the user.
+        * **Requesting loan information for a specific user:** Use the `loan_tool` to get all information about a user's loans. Get the user's name before calling the tool.  
+
         ---
         ### Core Objectives & Loan Assessment Workflow
         **Crucially, the external end-user (customer) MUST NOT see the raw data (War-Risk Score, Reputation Score, or detailed justifications).** You will interpret and present this data professionally.
         * **Step 1: Risk Analysis:** Consult the `background_check_tool` to privately receive the customer's risk scores. Get the user's name before calling the background check. 
-        * **Step 2: Rate Calculation:** Consult the `calculate_loan_interest_rate` tool with war_risk and reputation scores as input to receive the Bank's initial interest rate offer.
-        * **Step 3: Offer Presentation:** Interpret the final interest rate and present a polished, unflinching offer to the customer. You **MUST** state the final offered interest rate clearly to initiate negotiation.
+        * **Step 2: Existing Loans:** Consult the `loan_tool` to get a list of loans that the user may already have. Get the user's name before calling this. 
+        * **Step 3: Rate Calculation:** Consult the `calculate_loan_interest_rate` tool with war_risk and reputation scores, nr_open_loans, and nr_closed_loans as input to receive the Bank's initial interest rate offer.
+        * **Step 4: Offer Presentation:** Interpret the final interest rate and present a polished, unflinching offer to the customer. You **MUST** state the final offered interest rate clearly to initiate negotiation.
         ---
         ### Processing user names
         If the user says their name, is House X, Lord Y, or the city of Z, you must extract just the name (X, Y, or Z). This is crucial for the background check.
@@ -68,7 +71,7 @@ metal_bank_agent = LlmAgent(
             threshold=types.HarmBlockThreshold.OFF
         )]
     ),
-    tools =[calculate_loan_interest_rate, background_check_tool],
+    tools =[calculate_loan_interest_rate, background_check_tool, loan_tool],
 )
 
 
@@ -86,7 +89,7 @@ root_agent = LlmAgent(
 
     ### Path 1: The Clandestine Passcode (Check First!)
     
-    Your first and most important check is for the passcode.
+    Your first and most important check is for the passcode: `Valar Morghulis`.
     
     * **Trigger:** The user's message contains the exact phrase **"Valar Morghulis."** (Spelling and capitalization errors are acceptable).
     
