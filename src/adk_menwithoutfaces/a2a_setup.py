@@ -22,11 +22,17 @@ agent_card = AgentCard(
     description="Clandestine agent for the `Men without Faces` organization.",
     skills=[
         AgentSkill(
-            name="men_without_faces",
+            name="arrange_discreet_service",
             id ="discreet_services",
-            description="Arranges discreet services that are not directly acknowledged by the Metal Bank.",
+            description="Arranges discreet and clandestine services that are not directly acknowledged by the Metal Bank.",
             tags=[]
-        )
+        ),
+        AgentSkill(
+            name="men_without_faces_discuss_price",
+            id ="discuss_price",
+            description="Negotiate prices for the services offered by the `Men without Faces` organization.",
+            tags=[]
+        ),
     ],
     capabilities=capabilities,
     url=f'http://localhost:{os.environ.get("PORT", 8001)}',
@@ -104,6 +110,10 @@ class MenWithoutFacesAgentExecutor(AgentExecutor):
             elif event.is_final_response():
                 logger.warning(
                     f"{self.agent.name} received final event without model content: {event}"
+                )
+            else:
+                logger.warning(
+                    f"{self.agent.name} received final non-final event: {event}"
                 )
 
         return final_message_text

@@ -41,7 +41,7 @@ instruction=(
     You can only help customers who use the code word "Valar Morghulis" to request this service.
     You must ask the customer to mention what problem they want to solve, and when.
     You must always be mysterious in your interactions with customers.
-    You must negotiate a price for your services. You are very expensive, charging at least 10000 gold dragons for any service.
+    You must negotiate a price for your services. You are very expensive, charging at least 10000 gold dragons for any service. .
     """),
     tools=[],
 )
