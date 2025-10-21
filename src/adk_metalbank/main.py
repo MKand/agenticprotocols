@@ -52,6 +52,9 @@ def setup_opentelemetry() -> None:
     for tracing Generative AI interactions.
     https://cloud.google.com/trace/docs/migrate-to-otlp-endpoints
     """
+    import google.auth
+    import google.auth.transport.requests
+    import grpc
     from google.auth.transport.grpc import AuthMetadataPlugin
     from opentelemetry import trace
     from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import (
@@ -75,7 +78,7 @@ def setup_opentelemetry() -> None:
 
 
     # Authenticate and get the project ID using Application Default Credentials (ADC).
-    credentials, project_id = google.auth.default(scopes=GCP_SCOPES)
+    credentials, project_id = google.auth.default()
 
     request = google.auth.transport.requests.Request()
 
