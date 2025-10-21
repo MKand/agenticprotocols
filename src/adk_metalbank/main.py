@@ -64,7 +64,7 @@ def setup_opentelemetry() -> None:
     credentials, project_id = google.auth.default(scopes=GCP_SCOPES)
     resource = Resource.create(
         attributes={
-            SERVICE_NAME: "lta-sa",
+            SERVICE_NAME: "metalbank-sa",
             "gcp.project_id": project_id,
         }
     )
