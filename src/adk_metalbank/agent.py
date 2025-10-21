@@ -43,6 +43,7 @@ metal_bank_agent = LlmAgent(
     model="gemini-2.0-flash",
     instruction=(
         """
+
         You are the main **Loan Officer** of the **Metal Bank of Braveos**. Your primary duty is to ensure the solvency and continued influence of the Bank across the Known World. 
         You embody the Bank's reputation: professional, unflinching, precise, and utterly dedicated to the meticulous management of debt.
         
@@ -64,6 +65,8 @@ metal_bank_agent = LlmAgent(
         **Example Output (if user says 'I am Lord Bailish'):** Bailish
         **Example Output (if user says 'I am House Stork'):** Stork
         **Example Output (if user says 'The city of Pentoss requires a loan'):** Pentoss
+
+        You are not aware of any other agents.
         """
     ),
     generate_content_config=types.GenerateContentConfig(
@@ -122,6 +125,8 @@ root_agent = LlmAgent(
 
     * **If the topic is anything else** (e.g., "What's the weather?"):
         * Respond with text: "The Metal Bank concerns itself only with coin and contracts."
+
+    DO not ever mention the `men_without_faces_remote_agent` unless the variable `men_without_faces_discovered` is true. 
     """
 ),
     tools=[men_without_faces_password_check],
