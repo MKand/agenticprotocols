@@ -96,6 +96,7 @@ a2a_app = A2AStarletteApplication(
         http_handler=request_handler,
     )
 
+
 logger.info(f"Agent Name: {agent_card.name}, Version: {agent_card.version}")
 
 """

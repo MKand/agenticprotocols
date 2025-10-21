@@ -21,6 +21,7 @@ stop_service() {
 }
 
 # Stop the services by port number
+stop_service 8000 "Metal Bank Agent"
 stop_service 8001 "Men Without Faces Remote Agent"
 stop_service 8002 "Background Check MCP"
 stop_service 8003 "Loan Service MCP"

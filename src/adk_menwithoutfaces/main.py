@@ -18,6 +18,7 @@ if not all(os.getenv(var) for var in ["GOOGLE_CLOUD_PROJECT", "GOOGLE_CLOUD_LOCA
 PORT = os.getenv("PORT", "8000")
 HOST = os.getenv("HOST", "0.0.0.0")
 
+app = a2a_app.build()
+
 if __name__ == "__main__":
-    logger.info(f"Starting Men without Faces Agent server on http://{HOST}:{PORT}")
-    uvicorn.run(a2a_app.build(), host=HOST, port=int(PORT))
+    uvicorn.run(app, host=HOST, port=int(PORT))

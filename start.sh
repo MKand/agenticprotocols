@@ -21,6 +21,10 @@ PORT=8003 .venv/bin/python3 -m src.loan_service.main &
 
 # Start Men Without Faces Remote Agent
 echo "Starting Men Without Faces Remote Agent..."
-PORT=8001 .venv/bin/python3 -m uvicorn src.adk_menwithoutfaces.agent:a2a_app --reload --port 8001 --host localhost &
+PORT=8001 .venv/bin/python3 -m uvicorn src.adk_menwithoutfaces:app --reload --port 8001 --host localhost &
+
+# Start Metal Bank Agent
+echo "Starting Metal Bank Agent..."
+PORT=8000 .venv/bin/python3 -m uvicorn src.adk_metalbank:app --reload --port 8000 --host localhost &
 
 echo "Startup script finished."

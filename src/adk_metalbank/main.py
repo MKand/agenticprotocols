@@ -35,6 +35,7 @@ from opentelemetry.sdk.resources import SERVICE_NAME, Resource
 from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.trace.export import BatchSpanProcessor
 from opentelemetry.instrumentation.google_genai import GoogleGenAiSdkInstrumentor
+from opentelemetry.sdk.resources import SERVICE_INSTANCE_ID, Resource
 from google.adk.cli.fast_api import get_fast_api_app
 from fastapi import FastAPI
 from src.adk_metalbank.config import set_config
@@ -42,8 +43,12 @@ from src.adk_metalbank.config import set_config
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+set_config()
+
 AGENT_DIR = f"{os.path.dirname(os.path.abspath(__file__))}"
 ALLOWED_ORIGINS = ["http://localhost", "*"]
+SETUP_GENAI_TRACING = True
+
 
 GCP_SCOPES = [
     "https://www.googleapis.com/auth/trace.append",       # For Cloud Trace
@@ -52,7 +57,6 @@ GCP_SCOPES = [
     "https://www.googleapis.com/auth/cloud-platform",     # Broad scope for other Google ADK/AI Platform needs
    ]
 
-set_config()
 
 app: FastAPI = get_fast_api_app(
     agents_dir=AGENT_DIR,
@@ -61,10 +65,12 @@ app: FastAPI = get_fast_api_app(
 )
 
 def setup_opentelemetry() -> None:
+    os.environ["OTEL_INSTRUMENTATION_GENAI_CAPTURE_MESSAGE_CONTENT"] = "true"
+
     credentials, project_id = google.auth.default(scopes=GCP_SCOPES)
     resource = Resource.create(
         attributes={
-            SERVICE_NAME: "metalbank-sa",
+            SERVICE_INSTANCE_ID: f"worker-{os.getpid()}",
             "gcp.project_id": project_id,
         }
     )
@@ -99,7 +105,9 @@ def setup_opentelemetry() -> None:
     event_logger_provider = EventLoggerProvider(logger_provider)
     events.set_event_logger_provider(event_logger_provider)
 
-    reader = PeriodicExportingMetricReader(CloudMonitoringMetricsExporter())
+    reader = PeriodicExportingMetricReader(CloudMonitoringMetricsExporter(
+        project_id=project_id,
+    ))
     meter_provider = MeterProvider(metric_readers=[reader], resource=resource)
     metrics.set_meter_provider(meter_provider)
 
@@ -109,7 +117,8 @@ def setup_opentelemetry() -> None:
     GoogleGenAiSdkInstrumentor().instrument()
     return
 
-setup_opentelemetry()
+if SETUP_GENAI_TRACING:
+    setup_opentelemetry()
 
 if __name__ == "__main__":
    uvicorn.run(app, host="0.0.0.0", port=int(os.environ.get("PORT", 8000)))

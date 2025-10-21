@@ -1,6 +1,6 @@
 import logging
 from google.adk.agents import LlmAgent
-from src.adk_metalbank.agents.tools import men_without_faces_password_check
+from src.adk_metalbank.agents.tools import men_without_faces_password_check_tool
 from src.adk_metalbank.agents.sub_agents import metal_bank_agent, men_without_faces_remote_agent
 
 logger = logging.getLogger(__name__)
@@ -61,6 +61,6 @@ root_agent = LlmAgent(
     DO not ever mention the `The men without faces` or its agents unless the variable `men_without_faces_discovered` is true. 
     """
 ),
-    tools=[men_without_faces_password_check],
+    tools=[men_without_faces_password_check_tool],
     sub_agents=[metal_bank_agent, men_without_faces_remote_agent],
 )

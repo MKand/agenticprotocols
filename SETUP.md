@@ -61,23 +61,11 @@ Make sure you have the following installed on your system:
     2. **The Loan Service MCP server (port 8003):** A microservice that manages a loan database (using SQLite). It provides tools to create new loans and retrieve existing loan data for entities.
     3. **The Men without Faces Remote Agent (port 8001):** A separate, remote agent that handles "clandestine" requests. It is invoked by the main orchestrator agent only when a specific password ("valar morghulis") is detected.
 
-
     ```bash
      ./start.sh
     ```
 
-This will start the Background Check MCP on port 8002, the Loan Service MCP on port 8003, and the Men Without Faces Remote Agent on port 8001.
-
-3.  **Run the Metal Bank of Braveos Agent application:**
-
-    In a new terminal, navigate to the `src` directory and run the ADK web server. This starts the main agent orchestrator and provides a web interface for interacting with it.
-
-    ```bash
-    cd src
-    adk web
-    ```
-
-    Select the `adk_metalbank` from the dropdown menu and start chatting.
+This will start the Background Check MCP on port 8002, the Loan Service MCP on port 8003, and the Men Without Faces Remote Agent on port 8001, and the agent itself on port 8000.
 
 4.  **Stopping the Services:**
 
