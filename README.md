@@ -25,7 +25,7 @@ A2A is the mechanism for agents to communicate with other agents, whether they a
     *   The `men_without_faces_agent` in `src/adk_menwithoutfaces/agent.py` demonstrates how to expose an agent as an A2A service using `A2AStarletteApplication`. This makes the agent discoverable and callable by other agents.
     *   `src/adk_menwithoutfaces/a2a_customexecutor.py` contains the custom `MenWithoutFacesAgentExecutor`. This executor defines the specific logic for how the `men_without_faces_agent` processes incoming A2A requests, interacts with its internal `Runner`, and sends responses back. This is a key file for understanding how to customize agent execution within the A2A framework.
 
-### MCP (Microservice Communication Protocol) Implementations
+### MCP (Model-Context Protocol) Implementations
 
 MCP is the standard for agents to interact with external microservices or tools. It allows agents to leverage specialized functionalities that are outside their core LLM capabilities.
 
