@@ -1,12 +1,23 @@
 #!/bin/bash
-export PYTHONPATH=$PYTHONPATH:$(pwd)/src
+
+# Get the absolute path of the directory where the script is located
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+
+export PYTHONPATH=$PYTHONPATH:$SCRIPT_DIR/src
+
+echo "PYTHONPATH is set to ${PYTHONPATH}"
+
 
 echo "Loading environment variables from .env file..."
 source .env
 
-# Start Loan Stats MCP
-echo "Starting Loan Stats MCP..."
+# Start Background Check MCP
+echo "Starting Background Check MCP..."
 PORT=8002 .venv/bin/python3 -m src.background_check_service.main &
+
+# Start Loan Service MCP
+echo "Starting Loan Service MCP..."
+PORT=8003 .venv/bin/python3 -m src.loan_service.main &
 
 # Start Men Without Faces Remote Agent
 echo "Starting Men Without Faces Remote Agent..."
