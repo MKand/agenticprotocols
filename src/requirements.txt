@@ -14,4 +14,4 @@ opentelemetry-util-http==0.54b1
 opentelemetry-exporter-gcp-logging==1.9.0a0
 opentelemetry-exporter-gcp-monitoring==1.9.0a0
 opentelemetry-exporter-otlp-proto-grpc==1.33.1
-opentelemetry.instrumentation.google_genai
+opentelemetry-instrumentation-google-generativeai==0.47.3

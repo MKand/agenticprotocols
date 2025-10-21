@@ -50,24 +50,17 @@ def setup_opentelemetry() -> None:
     Configures OpenTelemetry to export traces, logs, and metrics to Google Cloud.
     This setup is crucial for observing the application's behavior, especially
     for tracing Generative AI interactions.
+    https://cloud.google.com/trace/docs/migrate-to-otlp-endpoints
     """
     from google.auth.transport.grpc import AuthMetadataPlugin
-    from opentelemetry import _events as events, _logs as logs, metrics, trace
-    from opentelemetry.exporter.cloud_logging import CloudLoggingExporter
-    from opentelemetry.exporter.cloud_monitoring import CloudMonitoringMetricsExporter
+    from opentelemetry import trace
     from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import (
         OTLPSpanExporter,
     )
-    from opentelemetry.instrumentation.google_genai import GoogleGenAiSdkInstrumentor
-    from opentelemetry.sdk._events import EventLoggerProvider
-    from opentelemetry.sdk._logs import LoggerProvider
-    from opentelemetry.sdk._logs.export import BatchLogRecordProcessor
-    from opentelemetry.sdk.metrics import MeterProvider
-    from opentelemetry.sdk.metrics.export import PeriodicExportingMetricReader
+    from opentelemetry.instrumentation.google_generativeai import GoogleGenerativeAiInstrumentor
     from opentelemetry.sdk.resources import SERVICE_INSTANCE_ID, Resource
     from opentelemetry.sdk.trace import TracerProvider
     from opentelemetry.sdk.trace.export import BatchSpanProcessor
-    from opentelemetry.instrumentation.google_genai import GoogleGenAiSdkInstrumentor
 
     # --- Google Cloud Platform Scopes ---
     # Define the necessary OAuth 2.0 scopes for Google Cloud services.
@@ -83,6 +76,18 @@ def setup_opentelemetry() -> None:
 
     # Authenticate and get the project ID using Application Default Credentials (ADC).
     credentials, project_id = google.auth.default(scopes=GCP_SCOPES)
+
+    request = google.auth.transport.requests.Request()
+
+    auth_metadata_plugin = AuthMetadataPlugin(credentials=credentials, request=request)
+
+    channel_creds = grpc.composite_channel_credentials(
+        grpc.ssl_channel_credentials(),
+        grpc.metadata_call_credentials(auth_metadata_plugin),
+    )
+
+    otlp_grpc_exporter = OTLPSpanExporter(credentials=channel_creds)
+
     # Create a resource identifier for this service instance, which helps in
     # associating telemetry data with the correct application in Google Cloud.
     resource = Resource.create(
@@ -94,55 +99,21 @@ def setup_opentelemetry() -> None:
     # Set up OTLP auth
     # Create an authentication plugin for gRPC channels to securely send
     # telemetry data to the Google Cloud backend.
-    request = google.auth.transport.requests.Request()
-    auth_metadata_plugin = AuthMetadataPlugin(credentials=credentials, request=request)
-
-    # Combine SSL credentials with the auth plugin for a secure gRPC channel.
-    channel_creds = grpc.composite_channel_credentials(
-        grpc.ssl_channel_credentials(),
-        grpc.metadata_call_credentials(auth_metadata_plugin),
-    )
-
     # --- Trace Provider Setup ---
-    tracer_provider = TracerProvider(resource=resource)
+    custom_tracer_provider = TracerProvider(resource=resource)
     # The BatchSpanProcessor groups spans together before sending them to the exporter.
-    tracer_provider.add_span_processor(
+    custom_tracer_provider.add_span_processor(
         BatchSpanProcessor(
-            OTLPSpanExporter(
-                credentials=channel_creds,
-                endpoint="https://telemetry.googleapis.com:443/v1/traces",
-            )
+           span_exporter=otlp_grpc_exporter
         )
     )
     # Register the tracer provider globally.
-    trace.set_tracer_provider(tracer_provider)
-
-    # --- Logger Provider Setup ---
-    logger_provider = LoggerProvider(resource=resource)
-    # The BatchLogRecordProcessor groups log records for efficient export to Cloud Logging.
-    logger_provider.add_log_record_processor(
-        BatchLogRecordProcessor(CloudLoggingExporter())
-    )
-    # Register the logger provider globally.
-    logs.set_logger_provider(logger_provider)
-
-    # --- Event Logger Provider Setup ---
-    event_logger_provider = EventLoggerProvider(logger_provider)
-    events.set_event_logger_provider(event_logger_provider)
-
-    # --- Meter (Metrics) Provider Setup ---
-    # The PeriodicExportingMetricReader exports metrics to Cloud Monitoring at regular intervals.
-    reader = PeriodicExportingMetricReader(CloudMonitoringMetricsExporter(
-        project_id=project_id,
-    ))
-    meter_provider = MeterProvider(metric_readers=[reader], resource=resource)
-    # Register the meter provider globally.
-    metrics.set_meter_provider(meter_provider)
+    trace.set_tracer_provider(custom_tracer_provider)
 
     # --- Auto-instrumentation ---
     # This automatically patches the `google-genai` library to create trace spans
     # for each call to the Generative AI model, providing deep visibility.
-    GoogleGenAiSdkInstrumentor().instrument()
+    GoogleGenerativeAiInstrumentor().instrument()
     return
 
 # Conditionally enable OpenTelemetry based on an environment variable.
