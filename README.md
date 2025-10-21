@@ -25,8 +25,8 @@ Make sure you have the following installed on your system:
 1.  **Clone the repository:**
 
     ```bash
-    git clone https://github.com/MKand/AgenticProtocols_demo.git
-    cd bank_of_braavos
+    git clone https://github.com/MKand/AgenticProtocols_demo.git bank_of_braveos
+    cd bank_of_braveos
     ```
 
 2.  **Create and activate a virtual environment:**
