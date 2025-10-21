@@ -1,3 +1,4 @@
+from google.adk.tools import FunctionTool
 from google.adk.tools.tool_context import ToolContext
 from google.adk.tools.mcp_tool import MCPToolset, StreamableHTTPConnectionParams
 import os
@@ -78,3 +79,8 @@ def calculate_loan_interest_rate(war_risk: float, reputation: float, nr_open_loa
     
     # Return the rate directly from the tool for immediate agent consumption or logging.
     return final_rate
+
+calculate_loan_interest_rate_tool = FunctionTool(
+    func=calculate_loan_interest_rate,
+    require_confirmation=False
+)

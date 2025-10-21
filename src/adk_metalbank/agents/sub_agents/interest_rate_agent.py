@@ -1,6 +1,6 @@
 import logging
 from google.adk.agents import LlmAgent
-from src.adk_metalbank.agents.sub_agents.tools import calculate_loan_interest_rate
+from src.adk_metalbank.agents.sub_agents.tools import calculate_loan_interest_rate_tool
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
@@ -24,7 +24,7 @@ interest_rate_agent = LlmAgent(
     Return control to the root_agent after you negotiate the rate with the customer or if the customer decides to not pursue the loan.
 
     """),
-    tools=[calculate_loan_interest_rate],
+    tools=[calculate_loan_interest_rate_tool],
     output_key="rate_and_justification",
 
 )
