@@ -2,3 +2,16 @@ google-adk
 google-adk[a2a]
 fastmcp
 sqlmodel
+opentelemetry-api==1.33.1
+opentelemetry-exporter-otlp-proto-common==1.33.1
+opentelemetry-instrumentation==0.54b1
+opentelemetry-instrumentation-dbapi==0.54b1
+opentelemetry-proto==1.33.1
+opentelemetry-resourcedetector-gcp==1.9.0a0
+opentelemetry-sdk==1.33.1
+opentelemetry-semantic-conventions==0.54b1
+opentelemetry-util-http==0.54b1
+opentelemetry-exporter-gcp-logging==1.9.0a0
+opentelemetry-exporter-gcp-monitoring==1.9.0a0
+opentelemetry-exporter-otlp-proto-grpc==1.33.1
+opentelemetry.instrumentation.google_genai

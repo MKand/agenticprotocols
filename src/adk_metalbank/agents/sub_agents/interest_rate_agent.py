@@ -1,6 +1,6 @@
 import logging
 from google.adk.agents import LlmAgent
-from adk_metalbank.sub_agents.tools import calculate_loan_interest_rate
+from src.adk_metalbank.agents.sub_agents.tools import calculate_loan_interest_rate
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)

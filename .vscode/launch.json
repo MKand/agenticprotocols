@@ -5,7 +5,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Python Debugger: Background Stats MCP",
+            "name": "Background Stats MCP",
             "type": "debugpy",
             "request": "launch",
             "module": "src.background_check_service.main",
@@ -16,7 +16,7 @@
             "python": "${cwd}/.venv/bin/python3",
         },
         {
-            "name": "Python Debugger: Loan MCP",
+            "name": "Loan MCP",
             "type": "debugpy",
             "request": "launch",
             "module": "src.loan_service.main",
@@ -27,7 +27,7 @@
             "python": "${cwd}/.venv/bin/python3",
         },
          {
-            "name": "Python Debugger: Men Without Faces Remote Agent",
+            "name": "Men Without Faces Remote Agent",
             "type": "debugpy",
             "request": "launch",
             "module": "src.adk_menwithoutfaces.main",
@@ -38,5 +38,16 @@
             "envFile": "${workspaceFolder}/.env",
             // "args": ["src.adk_menwithoutfaces.agent:a2a_app","--reload", "--port", "8001", "--host", "localhost"]
         },
+        {
+            "name": "Metal Bank Agent",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "src.adk_metalbank.main",
+            "env": {
+                "PORT": "8000",
+            },
+            "python": "${cwd}/.venv/bin/python3",
+            "envFile": "${workspaceFolder}/.env",
+        }
     ]
 }

@@ -1,7 +1,7 @@
 import logging
 from google.adk.agents import LlmAgent
 from google.genai import types
-from adk_metalbank.sub_agents.tools import calculate_loan_interest_rate, background_check_tool, loan_tool
+from src.adk_metalbank.agents.sub_agents.tools import calculate_loan_interest_rate, background_check_tool, loan_tool
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)

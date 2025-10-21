@@ -1,14 +1,10 @@
 import logging
 from google.adk.agents import LlmAgent
-from adk_metalbank.tools import men_without_faces_password_check
-from adk_metalbank.config import set_config
-from adk_metalbank.sub_agents.metal_bank_agent import metal_bank_agent
-from adk_metalbank.sub_agents.remote_agent import men_without_faces_remote_agent
+from src.adk_metalbank.agents.tools import men_without_faces_password_check
+from src.adk_metalbank.agents.sub_agents import metal_bank_agent, men_without_faces_remote_agent
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
-
-set_config()
 
 # The root_agent serves as the main orchestrator or router for the entire application.
 # It inspects the user's initial message to decide whether to route the request
@@ -68,4 +64,3 @@ root_agent = LlmAgent(
     tools=[men_without_faces_password_check],
     sub_agents=[metal_bank_agent, men_without_faces_remote_agent],
 )
-    
