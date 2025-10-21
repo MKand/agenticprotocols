@@ -5,12 +5,25 @@ from google.adk.agents import LlmAgent
 from google.adk.agents.remote_a2a_agent import AGENT_CARD_WELL_KNOWN_PATH, RemoteA2aAgent
 from google.genai import types
 from .tools import calculate_loan_interest_rate, background_check_tool, loan_tool, men_without_faces_password_check
+import os
+
+logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO)
 
 load_dotenv()
+
+# Quit if required env variables are absent
+if not all(os.getenv(var) for var in ["GOOGLE_CLOUD_PROJECT", "GOOGLE_CLOUD_LOCATION", "GOOGLE_GENAI_USE_VERTEXAI"]):
+    logger.error("Missing one or more environment variables: GOOGLE_CLOUD_PROJECT, GOOGLE_CLOUD_LOCATION, GOOGLE_GENAI_USE_VERTEXAI")
+    exit(1)
+
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
+# The interest_rate_agent acts as a specialized sub-agent with the persona of a "Chief Actuary".
+# Its sole responsibility is to calculate a loan's interest rate using the provided tool
+# based on risk scores and loan history passed to it.
 interest_rate_agent = LlmAgent(
     name="interest_rate_agent",
     model="gemini-2.0-flash",
@@ -31,13 +44,19 @@ interest_rate_agent = LlmAgent(
     output_key="rate_and_justification",
 
 )
+
+# This defines a remote agent that handles "clandestine services".
+# Instead of being defined locally, it's accessed via an HTTP endpoint where its
+# AgentCard is published. This allows it to run as a separate microservice.
 men_without_faces_remote_agent = RemoteA2aAgent(
     name="men_without_faces_remote_agent",
     description="Clandestine agent for the Men without Faces organization who arranges discreet services that are not directly acknowledged by the Metal Bank.",
     agent_card=f"http://localhost:8001/{AGENT_CARD_WELL_KNOWN_PATH}",
 )
 
-
+# The metal_bank_agent acts as the primary "Loan Officer".
+# It manages the main banking workflow, including performing background checks,
+# checking existing loans, and presenting loan offers to the user.
 metal_bank_agent = LlmAgent(
     name="metal_bank_agent",
     model="gemini-2.0-flash",
@@ -78,13 +97,15 @@ metal_bank_agent = LlmAgent(
     tools =[calculate_loan_interest_rate, background_check_tool, loan_tool],
 )
 
-
+# The root_agent serves as the main orchestrator or router for the entire application.
+# It inspects the user's initial message to decide whether to route the request
+# to the clandestine `men_without_faces_remote_agent` or the standard `metal_bank_agent`.
 root_agent = LlmAgent(
     name="metal_bank_orchestrator_agent",
     model="gemini-2.0-flash",
     instruction=(
     """
-   You are the **Metal Bank orchestrator** agent. Your job is to analyze all user messages and take one of three actions: 
+    You are the **Metal Bank orchestrator** agent. Your job is to analyze all user messages and take one of three actions: 
     1. Silently route to clandestine services.
     2. Greet and route to banking services.
     3. Deny the request.
@@ -109,14 +130,16 @@ root_agent = LlmAgent(
     
     ### Path 2: Banking & Default Inquiries 
     
-   If Path 1 is NOT triggered, you must analyze the user's intent and proceed.
+   If Path 1 is NOT triggered, you must analyze the user's intent from the message and proceed.
     
     * **If the topic is Banking or a Greeting** (loans, finance, accounts, debt, or "hello"):
         1.  **Greet:** You may greet the user.
             * **Example:** "Welcome to the Metal Bank of Braveos. How may I assist you today?"
             * **Example:** "Welcome to the Metal Bank of Braveos. You stated you wanted a loan. " and then transfer to the loan agent.
 
-        2.  **Route:** Once you know the purpose of the user is  banking, call the `metal_bank_agent`.
+        2.  **Route:** Once you know the purpose of the user is banking, call the `metal_bank_agent`.
+
+    ### Path 3:  
 
     * **If the topic is Clandestine** ("assassin," "special services," "accident") **BUT Path 1 was NOT triggered:**
         * You **MUST** deny any knowledge.
@@ -126,7 +149,7 @@ root_agent = LlmAgent(
     * **If the topic is anything else** (e.g., "What's the weather?"):
         * Respond with text: "The Metal Bank concerns itself only with coin and contracts."
 
-    DO not ever mention the `men_without_faces_remote_agent` unless the variable `men_without_faces_discovered` is true. 
+    DO not ever mention the `The men without faces` or its agents unless the variable `men_without_faces_discovered` is true. 
     """
 ),
     tools=[men_without_faces_password_check],

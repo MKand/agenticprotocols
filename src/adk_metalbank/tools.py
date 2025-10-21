@@ -3,15 +3,22 @@ from google.adk.tools.tool_context import ToolContext
 from google.adk.tools.mcp_tool import MCPToolset, StreamableHTTPConnectionParams
 import os
 
+# Get MCP server URLs from environment variables, with defaults for local development.
 BACKGROUND_CHECK_MCP_SERVER_URL = os.getenv('BACKGROUND_CHECK_MCP_SERVER_URL', "http://localhost:8002/mcp")
 LOAN_MCP_SERVER_URL = os.getenv('LOAN_MCP_SERVER_URL', "http://localhost:8003/mcp")
 
 
+# Create a toolset for the background check service.
+# This toolset connects to the background check MCP server and exposes its tools to the agent.
+# The `tool_filter` specifically includes only the `do_background_check` tool from that service.
 background_check_tool = MCPToolset(
     connection_params=StreamableHTTPConnectionParams(url=BACKGROUND_CHECK_MCP_SERVER_URL),
     tool_filter = ["do_background_check"]
 )
 
+# Create a toolset for the loan service.
+# This toolset connects to the loan service MCP server and exposes all of its tools
+# (create_loan, get_all_loans, get_loans_by_name) to the agent.
 loan_tool = MCPToolset(
     connection_params=StreamableHTTPConnectionParams(url=LOAN_MCP_SERVER_URL),
 )
@@ -32,8 +39,10 @@ def men_without_faces_password_check(message: str, tool_context: ToolContext) ->
 
     """
         
+    # Check for the password in a case-insensitive manner.
     parsed_message = message.lower()
     if "valar morghulis" in parsed_message:
+        # If the password is found, set a flag in the agent's state to remember it for the session.
         tool_context.state["men_without_faces_discovered"] = True
         return True
     else:
@@ -73,7 +82,7 @@ def calculate_loan_interest_rate(war_risk: float, reputation: float, nr_open_loa
         
     # --- Loan Interest Rate Calculation Logic ---
     # Assuming war_risk and reputation are between 0 and 1
-    # Higher war_risk increases risk; Lower reputation increases risk.
+    # Higher war_risk increases risk; higher reputation decreases risk (1.0 - reputation).
     risk_factor = 0.75 * war_risk + 0.25 * (1.0 - reputation)
     
     # Baseline 10% interest (0.1), multiplied by the risk factor (0.9), scaled to a percentage
@@ -86,13 +95,13 @@ def calculate_loan_interest_rate(war_risk: float, reputation: float, nr_open_loa
     interest_rate -= nr_closed_loans * 0.5
     
     
-    # Sets the output for the Loan Officer (Root Agent) to see internally
-    # Round the rate for cleaner output
+    # Round the rate for cleaner output and ensure it doesn't fall below a minimum threshold.
     final_rate = round(interest_rate, 2)
     if final_rate < 1:
         final_rate = 1
     
+    # Store the calculated rate in the agent's shared state for other agents/tools to access.
     tool_context.state["loan_interest_rate"] = final_rate
     
-    # Return the rate directly from the tool for immediate agent consumption/logging
+    # Return the rate directly from the tool for immediate agent consumption or logging.
     return final_rate
