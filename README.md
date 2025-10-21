@@ -1,6 +1,6 @@
 # The Metal Bank of Braveos Agent
 
-The Metal Bank of Braveos is a multi-agent application built using the Google Agent Development Kit (ADK). It simulates a fantasy-themed bank that processes loan applications and handles clandestine requests. This project serves as a practical demonstration of building sophisticated, tool-using, and multi-agent systems with ADK, showcasing key agentic protocols like Agent-to-Agent (A2A) communication and Microservice Communication Protocol (MCP) integration.
+The Metal Bank of Braveos is a multi-agent application built using the Google Agent Development Kit (ADK). It simulates a fantasy-themed bank that processes loan applications and handles clandestine requests. This project serves as a practical demonstration of building sophisticated, tool-using, and multi-agent systems with ADK, showcasing key agentic protocols like Agent-to-Agent (A2A) communication and Model Context Protocol (MCP) integration.
 
 ## Architecture Deep Dive: A Roadmap to Agentic Protocols
 
