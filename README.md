@@ -25,7 +25,7 @@ Make sure you have the following installed on your system:
 1.  **Clone the repository:**
 
     ```bash
-    git clone <repository-url>
+    git clone https://github.com/MKand/AgenticProtocols_demo.git
     cd bank_of_braavos
     ```
 
