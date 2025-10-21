@@ -25,6 +25,7 @@
             },
             "envFile": "${workspaceFolder}/.env",
             "python": "${cwd}/.venv/bin/python3",
+            "justMyCode": false
         },
          {
             "name": "Men Without Faces Remote Agent",
@@ -36,7 +37,6 @@
             },
             "python": "${cwd}/.venv/bin/python3",
             "envFile": "${workspaceFolder}/.env",
-            // "args": ["src.adk_menwithoutfaces.agent:a2a_app","--reload", "--port", "8001", "--host", "localhost"]
         },
         {
             "name": "Metal Bank Agent",
