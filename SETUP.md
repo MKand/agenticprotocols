@@ -1,5 +1,9 @@
 # The Metal Bank of Braveos Agent
 
+__author__ = Manasa Kandula
+
+__last updated__ =  21 Oct 2025
+
 The Metal Bank of Braveos is a multi-agent application built using the Google Agent Development Kit (ADK). It simulates a fantasy-themed bank that processes loan applications and handles clandestine requests. The system uses a main orchestrator agent to route user requests to specialized sub-agents and microservices, demonstrating a robust, tool-using, multi-agent architecture.
 
 The core of the application is a `root_agent` that acts as an orchestrator. Based on user input, it can route to:
@@ -48,11 +52,20 @@ Make sure you have the following installed on your system:
 
     Create a file named `.env` in the root of the project with the following content:
 
-    ```bash
+    ```
     GOOGLE_CLOUD_PROJECT=<PROJECT_ID>
     GOOGLE_CLOUD_LOCATION=<REGION>
     GOOGLE_GENAI_USE_VERTEXAI=TRUE
     ```
+   
+    If you want to export GenAI traces from your ADK agent to Google Cloud Platform's trace explorer*, then also add the following
+
+    ```
+    GOOGLE_APPLICATION_CREDENTIALS=<path to your Application Default Credentials file>
+    OTEL_INSTRUMENTATION_GENAI_CAPTURE_MESSAGE_CONTENT=TRUE
+    ```
+
+    *Note: The Generative AI trace feature is experimental and subject to change. You can read more about the underlying OpenTelemetry standard [here](https://opentelemetry.io/blog/2024/otel-generative-ai/). Native support for GenAI traces is not yet available in the ADK, so this application includes a custom implementation to enable trace collection.
 
 2.  **Run the startup script:**
 

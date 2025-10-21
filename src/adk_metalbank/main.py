@@ -47,7 +47,6 @@ set_config()
 
 AGENT_DIR = f"{os.path.dirname(os.path.abspath(__file__))}"
 ALLOWED_ORIGINS = ["http://localhost", "*"]
-SETUP_GENAI_TRACING = True
 
 
 GCP_SCOPES = [
@@ -65,8 +64,6 @@ app: FastAPI = get_fast_api_app(
 )
 
 def setup_opentelemetry() -> None:
-    os.environ["OTEL_INSTRUMENTATION_GENAI_CAPTURE_MESSAGE_CONTENT"] = "true"
-
     credentials, project_id = google.auth.default(scopes=GCP_SCOPES)
     resource = Resource.create(
         attributes={
@@ -117,7 +114,7 @@ def setup_opentelemetry() -> None:
     GoogleGenAiSdkInstrumentor().instrument()
     return
 
-if SETUP_GENAI_TRACING:
+if os.getenv("OTEL_INSTRUMENTATION_GENAI_CAPTURE_MESSAGE_CONTENT", "false").lower() == "true":
     setup_opentelemetry()
 
 if __name__ == "__main__":
