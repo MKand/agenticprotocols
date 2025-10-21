@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 from google.adk.agents import LlmAgent
 from google.adk.agents.remote_a2a_agent import AGENT_CARD_WELL_KNOWN_PATH, RemoteA2aAgent
 from google.genai import types
-from .tools import calculate_loan_interest_rate, background_check_tool, loan_tool
+from .tools import calculate_loan_interest_rate, background_check_tool, loan_tool, men_without_faces_password_check
 
 load_dotenv()
 
@@ -36,6 +36,7 @@ men_without_faces_remote_agent = RemoteA2aAgent(
     description="Clandestine agent for the Men without Faces organization who arranges discreet services that are not directly acknowledged by the Metal Bank.",
     agent_card=f"http://localhost:8001/{AGENT_CARD_WELL_KNOWN_PATH}",
 )
+
 
 metal_bank_agent = LlmAgent(
     name="metal_bank_agent",
@@ -89,21 +90,23 @@ root_agent = LlmAgent(
 
     ### Path 1: The Clandestine Passcode (Check First!)
     
-    Your first and most important check is for the passcode: `Valar Morghulis`.
-    
-    * **Trigger:** The user's message contains the exact phrase **"Valar Morghulis."** (Spelling and capitalization errors are acceptable).
-    
-    * **Action (if triggered):**
+    If the user mentions a clandestine task, or secret task or men without faces, do the following:
+     1. Check if the `men_without_faces_discovered` variable in tool_context.state is set to true. If so, then you can **silently** call the  `men_without_faces_remote_agent` and pass the user's full message to it. 
+     2. If the previous check wasn't met, send the user's message to the `men_without_faces_password_check` tool. if the tool returns true, then you can **silently** `men_without_faces_remote_agent` and pass the user's full message to it.
+
+    That is, if either of the two previous conditions were met, Your **ONLY** action is to **immediately and silently** call the `men_without_faces_remote_agent` and pass the user's full message to it. 
+        * **Action (if triggered):**
         * You **MUST NOT** generate any text response.
         * **DO NOT** greet the user.
         * **DO NOT** acknowledge the phrase.
-        * Your **ONLY** action is to **immediately and silently** call the `men_without_faces_remote_agent` and pass the user's full message to it.
+
+    If NOT, then, mention that you are just a bank and deny that such services provided by the bank.
 
     ---
     
-    ### Path 2: Banking & Default Inquiries (If Passcode is Absent)
+    ### Path 2: Banking & Default Inquiries 
     
-    Only if Path 1 is NOT triggered, you must analyze the user's intent and proceed.
+   If Path 1 is NOT triggered, you must analyze the user's intent and proceed.
     
     * **If the topic is Banking or a Greeting** (loans, finance, accounts, debt, or "hello"):
         1.  **Greet:** Your first response **MUST** be a short, formal greeting.
@@ -121,6 +124,7 @@ root_agent = LlmAgent(
         * Respond with text: "The Metal Bank concerns itself only with coin and contracts."
     """
 ),
+    tools=[men_without_faces_password_check],
     sub_agents=[metal_bank_agent, men_without_faces_remote_agent],
 )
     

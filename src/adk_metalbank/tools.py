@@ -16,6 +16,30 @@ loan_tool = MCPToolset(
     connection_params=StreamableHTTPConnectionParams(url=LOAN_MCP_SERVER_URL),
 )
 
+def men_without_faces_password_check(message: str, tool_context: ToolContext) -> bool:
+    """
+    Check to see if the user's message contains the password for the Metal Bank.
+
+    Args:
+        message (str): The user's message that may contain the password.
+        tool_context (ToolContext): The ADK context object used to manage the
+                                    shared agent state.
+    State Effects (Updates tool_context.state):
+        'men_without_faces_discovered' (bool): Set to true if the password matches which indicates that the user can speak to the men without faces agent without needing to give the password again.
+
+    Returns:
+        bool: True if the password matches, False otherwise.
+
+    """
+        
+    parsed_message = message.lower()
+    if "valar morghulis" in parsed_message:
+        tool_context.state["men_without_faces_discovered"] = True
+        return True
+    else:
+        return False
+
+
 def calculate_loan_interest_rate(war_risk: float, reputation: float, nr_open_loans: int, nr_closed_loans: int, tool_context: ToolContext) -> float:
     """
     Calculates the loan interest rate based on risk and loan history.
