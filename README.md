@@ -37,7 +37,8 @@ MCP is the standard for agents to interact with external microservices or tools.
     *   `src/loan_service/main.py` is a concrete example of an MCP server implementation for the loan service. It uses the low-level `mcp.server` API to construct the server. It manually defines a list of tools by wrapping Python functions (like `create_loan` and `get_loans_by_name`) and then exposes them through `@mcp_server.list_tools()` and `@mcp_server.call_tool()` handlers. The `call_tool` handler routes incoming requests to the correct Python function. This server manages a SQLite database for loan data. The `cancel_loan_with_elicitation` tool, shows how to uses MCP's elicitation capability to interact with the user for confirmation during the tool's execution. `MCPToolset` client in ADK unfortunately does not support elicitation so we cannot see this in action during the live demo.
 
 #### Testing MCP Servers
-    Use the [MCP Inspector](https://modelcontextprotocol.io/docs/tools/inspector) to test the MCP servers.
+    
+Use the [MCP Inspector](https://modelcontextprotocol.io/docs/tools/inspector) to test the MCP servers.
     
 ### Local Tools
 
