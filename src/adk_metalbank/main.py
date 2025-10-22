@@ -15,9 +15,6 @@
 import os
 import uvicorn
 import logging
-import google.auth
-import google.auth.transport.requests
-import grpc
 from google.adk.cli.fast_api import get_fast_api_app
 from fastapi import FastAPI
 from src.adk_metalbank.config import set_config

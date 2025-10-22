@@ -30,12 +30,15 @@ A2A is the mechanism for agents to communicate with other agents, whether they a
 MCP is the standard for agents to interact with external microservices or tools. It allows agents to leverage specialized functionalities that are outside their core LLM capabilities.
 
 *   **Using MCP Tools in Agents:**
-    *   `src/adk_metalbank/agents/sub_agents/tools.py` defines `MCPToolset` instances for `background_check_tool` and `loan_tool`. These toolsets act as proxies, connecting the `metal_bank_agent` to external MCP servers (microservices) that provide specific functionalities.
+    *   `src/adk_metalbank/agents/sub_agents/tools.py` defines `MCPToolset` instances, such as `loan_tool` and `background_check_tool`. These `MCPToolset`s are configured by specifying the URL of their respective external MCP servers and the specific tools they expose, effectively acting as proxies that connect the `metal_bank_agent` to these external tool servers.
     *   In `src/adk_metalbank/agents/sub_agents/metal_bank_agent.py`, the `metal_bank_agent` is configured to use these `MCPToolset`s, allowing it to perform actions like `do_background_check` or `create_loan` by calling the respective microservices.
-*   **Implementing MCP Servers (Microservices):**
-    *   `src/loan_service/main.py` is a concrete example of an MCP server implementation. It uses `fastmcp` to expose functions like `create_loan`, `get_all_loans`, and `get_loans_by_name` as discoverable tools. This microservice manages a SQLite database for loan data.
+*   **Implementing MCP Servers:**
     *   Similarly, the `background_check_service` (implied by `src/adk_metalbank/sub_agents/tools.py` and `Setup.md`) would be another MCP server, providing tools for risk assessment.
+    *   `src/loan_service/main.py` is a concrete example of an MCP server implementation for the loan service. It uses the low-level `mcp.server` API to construct the server. It manually defines a list of tools by wrapping Python functions (like `create_loan` and `get_loans_by_name`) and then exposes them through `@mcp_server.list_tools()` and `@mcp_server.call_tool()` handlers. The `call_tool` handler routes incoming requests to the correct Python function. This server manages a SQLite database for loan data. The `cancel_loan_with_elicitation` tool, shows how to uses MCP's elicitation capability to interact with the user for confirmation during the tool's execution. `MCPToolset` client in ADK unfortunately does not support elicitation so we cannot see this in action during the live demo.
 
+#### Testing MCP Servers
+    Use the [MCP Inspector](https://modelcontextprotocol.io/docs/tools/inspector) to test the MCP servers.
+    
 ### Local Tools
 
 The `root_agent` uses a local Python function as a tool, directly integrated into its execution.
