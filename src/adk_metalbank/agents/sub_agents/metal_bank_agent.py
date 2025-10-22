@@ -24,6 +24,7 @@ metal_bank_agent = LlmAgent(
         * **Requesting a Loan:** Proceed immediately to the **Loan Assessment Workflow** below.
         * **Creating a Loan:** Create a loan using the `loan_tool` based on the interest rate (in percent) decided by the previous step, the total amount requested by the user.
         * **Requesting loan information for a specific user:** Use the `loan_tool` to get all information about a user's loans. Get the user's name before calling the tool.  
+        * **Cancelling a loan for a specific user:** Use the `loan_tool` and cancel the loan without elicitation. Get the user's name before calling the tool. 
 
         ---
         ### Core Objectives & Loan Assessment Workflow

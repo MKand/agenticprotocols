@@ -18,9 +18,12 @@ background_check_tool = MCPToolset(
 
 # Create a toolset for the loan service.
 # This toolset connects to the loan service MCP server and exposes all of its tools
-# (create_loan, get_all_loans, get_loans_by_name) to the agent.
+# (create_loan, get_loans_by_name, cancel_loan_without_elicitation) to the agent.
+# MCPToolset doesn't yet have elicitation support so we'll use the tool that doesn't require it.
 loan_tool = MCPToolset(
     connection_params=StreamableHTTPConnectionParams(url=LOAN_MCP_SERVER_URL),
+    tool_filter = ["create_loan", "get_loans_by_name", "cancel_loan_without_elicitation"],
+
 )
 
 def calculate_loan_interest_rate(war_risk: float, reputation: float, nr_open_loans: int, nr_closed_loans: int, tool_context: ToolContext) -> float:
