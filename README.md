@@ -1,50 +1,168 @@
-# The Metal Bank of Braveos Agent
+# The Metal Bank of Braavos Agent
 
-The Metal Bank of Braveos is a multi-agent application built using the Google Agent Development Kit (ADK). It simulates a fantasy-themed bank that processes loan applications and handles clandestine requests. This project serves as a practical demonstration of building sophisticated, tool-using, and multi-agent systems with ADK, showcasing key agentic protocols like Agent-to-Agent (A2A) communication and Model Context Protocol (MCP) integration.
+## Understanding Agentic Protocols (MCP & A2A)
+
+Before diving into the project, let's understand two fundamental protocols that enable sophisticated agent interactions:
+
+### Model Context Protocol (MCP)
+
+MCP is a standardized protocol that enables agents to interact with external tools and services. Think of it as a universal adapter that allows AI agents to:
+
+- Call external APIs and services consistently
+- Access specialized tools and functionalities
+- Interact with databases and other data sources
+- Handle complex operations beyond their core LLM capabilities
+
+### Agent-to-Agent Protocol (A2A)
+
+A2A is a communication protocol that enables agents to discover and interact with other agents, whether they're running locally or as remote services. It allows:
+
+- Agents to discover other agents' capabilities
+- Seamless communication between distributed agents
+- Delegation of tasks to specialized agents
+- Building complex, multi-agent systems
+
+## Project Overview
+
+The Metal Bank of Braavos is a sophisticated multi-agent application built using the Google Agent Development Kit (ADK). It simulates a fantasy-themed bank that processes loan applications and handles clandestine requests. This project serves as a practical demonstration of:
+
+- Building multi-agent systems with specialized roles
+- Implementing MCP servers for external tool integration
+- Setting up A2A communication between distributed agents
+- Creating a hierarchical agent architecture with delegated responsibilities
+- Handling complex workflows through agent collaboration
+
+## Setup
+
+Detailed setup and environment instructions are maintained in `SETUP.md`.
 
 ## Architecture Deep Dive: A Roadmap for Agentic Protocols
 
-The Metal Bank of Braveos employs a layered architecture to manage complex interactions between users, agents, and external services. For a high-level overview of the components and how they are started, please refer to the `Setup.md` file.
+The Metal Bank of Braavos employs a layered architecture to manage complex interactions between users, agents, and external services. For a high-level overview of the components and how they are started, please refer to the `Setup.md` file.
+
+## System Architecture
+
+The Metal Bank of Braavos uses a modern, microservices-based architecture that demonstrates best practices for building agent-based systems. The architecture is organized into several layers, each with specific responsibilities.
+
+### Architecture Diagram
+
+A detailed architecture diagram can be found in `arch.md`. Here's a high-level overview:
+
+```mermaid
+flowchart LR
+  subgraph AGENTS[Agent Layer]
+    ROOT[Root Agent\nOrchestrator]
+    MBA[Metal Bank Agent\nLoan Processing]
+    MWF[Men Without Faces\nClandestine Services]
+  end
+
+  subgraph SERVICES[MCP Services]
+    LOAN[Loan Service\nMCP Server]
+    BG[Background Check\nMCP Server]
+  end
+
+  subgraph DATA[Storage]
+    DB[SQLite Database]
+    JSON[Background Data\nJSON]
+  end
+
+  ROOT --> MBA
+  ROOT --> MWF
+  MBA --> LOAN
+  MBA --> BG
+  LOAN --> DB
+  BG --> JSON
+```
 
 ### Core Agents and Their Roles
 
 The application's intelligence is distributed across several specialized agents:
 
-*   **`root_agent` (Orchestrator)**: Located in `src/adk_metalbank/agent.py`, this is the primary entry point for user interactions. It acts as a router, analyzing user intent to decide whether to handle a request internally (banking services) or route it to a remote, specialized agent (clandestine services).
-k*   **`metal_bank_agent` (Loan Officer)**: Defined in `src/adk_metalbank/agents/sub_agents/metal_bank_agent.py`, this agent manages the core banking workflow. It performs background checks, checks existing loans, and presents loan offers. It heavily relies on external tools (MCP services) to fulfill its duties.
-*   **`men_without_faces_remote_agent` (Clandestine Service Proxy)**: Found in `src/adk_metalbank/agents/sub_agents/remote_agent.py`, this is a proxy agent that represents the remote "Men without Faces" service. The `root_agent` calls this proxy to delegate clandestine requests.
-*   **`men_without_faces_agent` (Clandestine Agent)**: Implemented as a separate microservice in `src/agents/adk_menwithoutfaces/agent.py`, this agent handles "clandestine" requests. It runs independently and communicates with the `metal_bank_orchestrator_agent` via the Agent-to-Agent (A2A) protocol.
+- **Root Agent (Orchestrator)** - `src/adk_metalbank/agent.py`
+  - Primary entry point for user interactions
+  - Analyzes user intent to route requests
+  - Decides between banking services (internal) and clandestine services (remote)
+  - Uses local tools for basic authentication
+
+- **Metal Bank Agent (Loan Officer)** - `src/adk_metalbank/agents/sub_agents/metal_bank_agent.py`
+  - Manages core banking workflow
+  - Performs background checks
+  - Checks existing loans
+  - Presents loan offers
+  - Uses MCP services for external operations
+
+- **Men Without Faces Remote Agent (Proxy)** - `src/adk_metalbank/agents/sub_agents/remote_agent.py`
+  - Proxy for the remote clandestine service
+  - Enables root_agent to delegate clandestine requests
+  - Demonstrates A2A client implementation
+
+- **Men Without Faces Agent (Clandestine)** - `src/agents/adk_menwithoutfaces/agent.py`
+  - Independent microservice for clandestine requests
+  - Communicates via A2A protocol
+  - Shows how to implement a remote agent service
 
 ### Agent-to-Agent (A2A) Protocol Implementation
 
-A2A is the mechanism for agents to communicate with other agents, whether they are running locally or as separate remote services.
+A2A enables seamless communication between agents, whether local or remote.
 
-*   **Calling a Remote Agent:**
-    *   In `src/adk_metalbank/agents/sub_agents/remote_agent.py`, observe how `men_without_faces_remote_agent` is defined using `RemoteA2aAgent`. This class allows the `root_agent` to discover and interact with the remote "Men without Faces" agent by referencing its `AgentCard` endpoint.
-*   **Implementing a Remote Agent (A2A Server):**
-    *   The `men_without_faces_agent` in `src/adk_menwithoutfaces/agent.py` demonstrates how to expose an agent as an A2A service using `A2AStarletteApplication`. This makes the agent discoverable and callable by other agents.
-    *   `src/adk_menwithoutfaces/a2a_customexecutor.py` contains the custom `MenWithoutFacesAgentExecutor`. This executor defines the specific logic for how the `men_without_faces_agent` processes incoming A2A requests, interacts with its internal `Runner`, and sends responses back. This is a key file for understanding how to customize agent execution within the A2A framework.
+#### Calling a Remote Agent
+
+In `src/adk_metalbank/agents/sub_agents/remote_agent.py`:
+
+- Implements `RemoteA2aAgent` for the Men Without Faces service
+- Uses `AgentCard` for service discovery
+- Handles async communication with remote agents
+- Manages request/response cycles
+
+#### Implementing a Remote Agent (A2A Server)
+
+In `src/adk_menwithoutfaces/agent.py` and related files:
+
+- Uses `A2AStarletteApplication` for agent exposure
+- Implements custom executor for request processing
+- Handles agent lifecycle and state management
+- Demonstrates proper error handling and responses
 
 ### MCP (Model-Context Protocol) Implementations
 
-MCP is the standard for agents to interact with external microservices or tools. It allows agents to leverage specialized functionalities that are outside their core LLM capabilities.
+MCP enables agents to use external tools and services through a standardized interface.
 
-*   **Using MCP Tools in Agents:**
-    *   `src/adk_metalbank/agents/sub_agents/tools.py` defines `MCPToolset` instances, such as `loan_tool` and `background_check_tool`. These `MCPToolset`s are configured by specifying the URL of their respective external MCP servers and the specific tools they expose, effectively acting as proxies that connect the `metal_bank_agent` to these external tool servers.
-    *   In `src/adk_metalbank/agents/sub_agents/metal_bank_agent.py`, the `metal_bank_agent` is configured to use these `MCPToolset`s, allowing it to perform actions like `do_background_check` or `create_loan` by calling the respective microservices.
-*   **Implementing MCP Servers:**
-    *   Similarly, the `background_check_service` (implied by `src/adk_metalbank/sub_agents/tools.py` and `Setup.md`) would be another MCP server, providing tools for risk assessment.
-    *   `src/loan_service/main.py` is a concrete example of an MCP server implementation for the loan service. It uses the low-level `mcp.server` API to construct the server. It manually defines a list of tools by wrapping Python functions (like `create_loan` and `get_loans_by_name`) and then exposes them through `@mcp_server.list_tools()` and `@mcp_server.call_tool()` handlers. The `call_tool` handler routes incoming requests to the correct Python function. This server manages a SQLite database for loan data. The `cancel_loan_with_elicitation` tool, shows how to uses MCP's elicitation capability to interact with the user for confirmation during the tool's execution. `MCPToolset` client in ADK unfortunately does not support elicitation so we cannot see this in action during the live demo.
+#### Using MCP Tools in Agents
+
+In `src/adk_metalbank/agents/sub_agents/tools.py`:
+
+- Defines `MCPToolset` instances for different services
+- Configures tool endpoints and authentication
+- Maps tool functions to agent capabilities
+- Handles tool response processing
+
+#### Implementing MCP Servers
+
+The project includes several MCP server implementations:
+
+##### Loan Service - `src/loan_service/main.py`
+
+- Uses the low-level `mcp.server` for a more involved setup
+- Implements CRUD operations for loans
+- Shows tool registration and routing
+
+##### Background Check Service - `src/background_check_service/main.py`
+
+- Uses the higher-level `FastMCP` implementation for a simpler setup
+- Shows simple tool implementation
+
+### Testing and Development
 
 #### Testing MCP Servers
-    
-Use the [MCP Inspector](https://modelcontextprotocol.io/docs/tools/inspector) to test the MCP servers.
-    
-### Local Tools
 
-The `root_agent` uses a local Python function as a tool, directly integrated into its execution.
+- Use [MCP Inspector](https://modelcontextprotocol.io/docs/tools/inspector) for testing
+- Test tools independently before agent integration
+- Validate request/response formats
+- Check error handling
 
-*   `src/adk_metalbank/tools.py` contains a local tool used by the `root_agent`:
-    *   `men_without_faces_password_check`: A simple function to check for a specific password, demonstrating how agents can use local logic to gate access or trigger specific behaviors.
-*   `src/adk_metalbank/sub_agents/tools.py` contains a local tool used by the `metal_bank_agent`:
-    *   `calculate_loan_interest_rate`: A function that calculates an interest rate based on risk scores and loan history.
+#### Local Development Tools
+
+The project includes tools that are local to the agent :
+
+- `men_without_faces_password_check`
+- `calculate_loan_interest_rate`
