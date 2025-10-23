@@ -2,13 +2,12 @@ from src.shared.models.loans import LoanRiskProfile
 from fastmcp import FastMCP
 import logging
 import json
+from typing import AsyncIterator
 
 
 logging.basicConfig(level=logging.INFO)
-ALLOWED_ORIGINS = ["http://localhost", "http://localhost:8000", "*"]
 
 mcp = FastMCP("Westorosi entity stats for loans")
-mcp.openapi_version = "3.0.2"
 
 BACKGROUND_STATS = None
 
@@ -42,26 +41,6 @@ async def do_background_check(entity_name: str) -> LoanRiskProfile:
         A LoanRiskProfile object containing the entity's loan risk information.
     """
     return _get_stats(entity_name)
-
-
-@mcp.tool()
-async def calculate_loan_interest_rate(entity_name: str) -> float:
-    """
-    Calculates the interest rate for a specific entity.
-
-    This endpoint returns a calculated interest rate based on the entity's loan risk profile.
-    If the entity is not found, a default risk profile is used for the calculation.
-
-    Args:
-        entity_name: The name of the entity asking for the loan offer.
-
-    Returns:
-        An interest rate value.
-    """
-    loan_risk_profile = _get_stats(entity_name)
-    risk = 0.75 * loan_risk_profile.war_risk + 0.25  * (1 - loan_risk_profile.reputation)
-    interest_rate = (0.9 * risk + 0.1 )*100
-    return interest_rate
     
 @mcp.tool()
 def list_supported_entities() -> list[str]:

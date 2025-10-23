@@ -166,3 +166,8 @@ The project includes tools that are local to the agent :
 
 - `men_without_faces_password_check`
 - `calculate_loan_interest_rate`
+
+## TODO
+
+1. Frontend
+2. Payment Protocol AP2 https://github.com/google-agentic-commerce/AP2/tree/main/samples/python/src/roles
