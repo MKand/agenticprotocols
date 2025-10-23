@@ -5,7 +5,7 @@ from src.adk_metalbank.agents.sub_agents import men_without_faces_remote_agent
 from google.adk.sessions import Session
 
 # The secret passcode that users must provide to access the Men Without Faces agent
-PASSCODE = "valar morghulis"
+PASSCODE = "balar worghulis"
 
 
 def format_converation_for_remote_agent(
@@ -43,7 +43,7 @@ async def call_remote_agent(
     tool_context: ToolContext,
 ) -> str:
     """
-    Calls the remote Men Without Faces agent with the given context.
+    Calls the remote `Men Without Faces agent` with the given context.
     
     Args:
         tool_context (ToolContext): Contains the conversation context and user message

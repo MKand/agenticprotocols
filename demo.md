@@ -25,6 +25,7 @@ Key Features:
 - Pydantic models for data structures
 
 Example Tools:
+
 - `do_background_check`: Example of a simple tool that returns structured data
 
 ## Part 3: Low-Level MCP Server Implementation
@@ -36,13 +37,11 @@ For more complex use cases requiring fine-grained control, we implement a low-le
 - Main server setup: [src/loan_service/main.py](src/loan_service/main.py)
 - Data models: [src/shared/models/loans.py](src/shared/models/loans.py)
 
-Advanced Features:
+Features:
 
 1. Custom session management
-2. Streaming responses
-3. Complex data types
-4. Tool state management
-5. Elicitation support
+2. Tool management
+3. Elicitation support
 
 ### Elicitation Example
 
@@ -72,9 +71,33 @@ npx @modelcontextprotocol/inspector
      - `create_loan` for new loans
      - `cancel_loan_with_elicitation` to test user confirmation flows
 
-## Part 5: Client Implementation with ADK
+## Part 5: Agent-to-Agent Protocol (A2A) Implementation
+
+This project demonstrates A2A communication between agents, with an interesting twist in how we implement access control. We'll look at both the proper A2A implementation and our custom approach.
+
+### Standard A2A Implementation
+
+The Men Without Faces service is implemented as a standalone A2A-enabled agent:
+
+📁 See implementation: [src/adk_menwithoutfaces/agent.py](src/adk_menwithoutfaces/agent.py)
+
+Key Features:
+
+- Implements `A2AStarletteApplication` for agent exposure
+- Uses `AgentCard` for service discovery and capability description
+- Uses `AgentSkills` to describe what the agent can do.
+- Custom executor for request processing. Step through a request to understand how a message is processed.
+- Optional: Use ADK's to_a2a method to easily convert an agent into an A2A capable agent.
+
+## Part 6: Client Implementation with ADK
+
+### Custom Approach: AgentTool Wrapper
 
 The Metal Bank agent demonstrates how to consume MCP services using Google's Agent Development Kit (ADK).
+
+In this implementation, we wrap the remote A2A agent in an AgentTool. While this is NOT the standard way to use A2A, we use it to implement a passcode check before transferring to the remote agent. This passcode check ("balar worghulis") as a thematic way to access clandestine services. It is **NOT** an implementation of an password/authentication mechanism.:
+
+📁 See implementation: [src/adk_metalbank/agents/tools.py](src/adk_metalbank/agents/tools.py)
 
 Key Components:
 
@@ -84,36 +107,5 @@ Key Components:
 The implementation shows:
 
 1. MCPToolset configuration and usage
-2. Tool filtering and selection
-3. Integration with LLM agents
-4. Error handling and state management
+2. Integration with LLM agents
 
-## Running the Demo
-
-1. Follow setup instructions in [SETUP.md](SETUP.md)
-2. Start services with [start.sh](start.sh)
-3. Test with MCP Inspector
-4. Stop services with [teardown.sh](teardown.sh)
-
-## Project Structure
-
-For a complete overview of the project architecture and components, see:
-- [README.md](README.md): Project overview and architecture
-- [arch.md](arch.md): Detailed architecture diagrams
-
-## Next Steps
-
-1. Explore the implementation files linked above
-2. Try modifying the MCP servers to add new tools
-3. Experiment with different elicitation patterns
-4. Build your own MCP services
-5. Integrate MCP tools into your agents
-
-## Troubleshooting
-
-Common issues and solutions:
-
-1. Check port configurations in [start.sh](start.sh)
-2. Use MCP Inspector to verify tool functionality
-3. Check logs for detailed error messages
-4. Review CORS settings in server implementations

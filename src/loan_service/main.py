@@ -17,8 +17,7 @@ from pydantic import BaseModel
 
 logging.basicConfig(level=logging.INFO)
 
-sqlite_file_name = "loans.db"
-sqlite_url = f"sqlite:///{sqlite_file_name}"
+
 
 class LoanCancelConfimation(BaseModel):
     """
@@ -78,6 +77,9 @@ session_manager = StreamableHTTPSessionManager(
     )
 
 # --- Database Setup ---
+
+sqlite_file_name = "loans.db"
+sqlite_url = f"sqlite:///{sqlite_file_name}"
 
 # Initialize SQLite engine and create tables
 engine = create_engine(sqlite_url, echo=True)  # echo=True enables SQL logging
