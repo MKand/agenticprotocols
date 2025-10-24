@@ -46,8 +46,6 @@ The Metal Bank of Braavos uses a modern, microservices-based architecture that d
 
 ### Architecture Diagram
 
-A detailed architecture diagram can be found in `arch.md`. Here's a high-level overview:
-
 ```mermaid
 flowchart LR
     subgraph AGENTS[Agents]
@@ -83,6 +81,7 @@ flowchart LR
     classDef default fill:#f9f9f9,stroke:#333,stroke-width:2px;
     classDef storage fill:#e1f7d5,stroke:#333;
     class DB,JSON storage
+```
 
 ### Core Agents and Their Roles
 
