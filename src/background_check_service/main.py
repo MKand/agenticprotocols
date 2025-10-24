@@ -2,12 +2,12 @@ from src.shared.models.loans import LoanRiskProfile
 from fastmcp import FastMCP
 import logging
 import json
-from typing import AsyncIterator
 
-
+logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
 
-mcp = FastMCP("Westorosi entity stats for loans")
+# Define MCP server
+mcp = FastMCP("Bestorosi entity stats for loans")
 
 BACKGROUND_STATS = None
 

@@ -15,9 +15,8 @@ import uvicorn
 from google.adk.tools.function_tool import FunctionTool
 from pydantic import BaseModel
 
+logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
-
-
 
 class LoanCancelConfimation(BaseModel):
     """

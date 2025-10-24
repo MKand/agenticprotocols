@@ -50,20 +50,26 @@ A detailed architecture diagram can be found in `arch.md`. Here's a high-level o
 
 ```mermaid
 flowchart LR
-  subgraph AGENTS[Agent Layer]
-    ROOT[Root Agent\nOrchestrator]
-    MBA[Metal Bank Agent\nLoan Processing]
-    MWF[Men Without Faces\nClandestine Services]
+  subgraph AGENTS[Agents]
+    subgraph AGENTS[Metal Bank Agent]
+      ROOT[Orchestrator Agent]
+      MBA[Loan Agent]
+    end
+    MWF[Men Without Faces Agent]
   end
 
   subgraph SERVICES[MCP Services]
-    LOAN[Loan Service\nMCP Server]
-    BG[Background Check\nMCP Server]
+      subgraph MCP Servers[FastMCP Server]
+        LOAN[Loan Processing MCP Server]
+      end
+      subgraph MCP Servers[Low Level MCP Server]
+          BG[Background Check MCP Server]
+      end
   end
 
   subgraph DATA[Storage]
     DB[SQLite Database]
-    JSON[Background Data\nJSON]
+    JSON[Background Data JSON]
   end
 
   ROOT --> MBA
