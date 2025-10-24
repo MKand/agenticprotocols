@@ -66,10 +66,10 @@ flowchart LR
     end
 
     subgraph DATA[Storage]
-      subgraph SQLDB[FastMCP Server]
+      subgraph SQLDB[SQLite Database]
           DB[Loans SQLite Database]
         end
-        subgraph JSONDB[Low Level MCP Server]
+        subgraph JSONDB[JSON File]
             JSON[Background Data File]
         end
     end
