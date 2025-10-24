@@ -56,7 +56,7 @@ flowchart LR
         MWF[Men Without Faces Agent]
     end
 
-    subgraph SERVICES[MCP Services]
+    subgraph SERVICES[MCP Servers]
         subgraph FAST[FastMCP Server]
             LOAN[Loan Processing]
         end
@@ -66,8 +66,12 @@ flowchart LR
     end
 
     subgraph DATA[Storage]
-        DB[SQLite Database]
-        JSON[Background Data JSON]
+      subgraph SQLDB[FastMCP Server]
+          DB[Loans SQLite Database]
+        end
+        subgraph JSONDB[Low Level MCP Server]
+            JSON[Background Data File]
+        end
     end
 
     ROOT --> MBA
