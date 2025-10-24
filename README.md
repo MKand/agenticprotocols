@@ -58,10 +58,10 @@ flowchart LR
 
     subgraph SERVICES[MCP Servers]
         subgraph FAST[FastMCP Server]
-            LOAN[Loan Processing]
+            BG[Background Check]
         end
         subgraph LOW[Low Level MCP Server]
-            BG[Background Check]
+            LOAN[Loan Processing]
         end
     end
 
