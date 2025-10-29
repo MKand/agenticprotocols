@@ -17,7 +17,7 @@ logger.setLevel(logging.INFO)
 # The Agent Executor is the heart of the agent's runtime logic.
 # It defines how the agent processes incoming requests, interacts with its runner,
 # and generates responses or events.
-class MenWithoutFacesAgentExecutor(AgentExecutor):
+class MenWithoutPhasesAgentExecutor(AgentExecutor):
     def __init__(self, agent: Agent, agent_card: AgentCard, runner: Runner):
         # Initialize the executor with the agent, its card, and the ADK runner.
         self.agent = agent

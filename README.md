@@ -1,4 +1,4 @@
-# The Metal Bank of Braavos Agent
+# The Metal Bank Agent
 
 ## Understanding Agentic Protocols (MCP & A2A)
 
@@ -24,7 +24,7 @@ A2A is a communication protocol that enables agents to discover and interact wit
 
 ## Project Overview
 
-The Metal Bank of Braavos is a sophisticated multi-agent application built using the Google Agent Development Kit (ADK). It simulates a fantasy-themed bank that processes loan applications and handles clandestine requests. This project serves as a practical demonstration of:
+The Metal Bank is a sophisticated multi-agent application built using the Google Agent Development Kit (ADK). It simulates a fantasy-themed bank that processes loan applications and handles clandestine requests. This project serves as a practical demonstration of:
 
 - Building multi-agent systems with specialized roles
 - Implementing MCP servers for external tool integration
@@ -38,11 +38,11 @@ Detailed setup and environment instructions are maintained in `SETUP.md`.
 
 ## Architecture Deep Dive: A Roadmap for Agentic Protocols
 
-The Metal Bank of Braavos employs a layered architecture to manage complex interactions between users, agents, and external services. For a high-level overview of the components and how they are started, please refer to the `Setup.md` file.
+The Metal Bank employs a layered architecture to manage complex interactions between users, agents, and external services. For a high-level overview of the components and how they are started, please refer to the `Setup.md` file.
 
 ## System Architecture
 
-The Metal Bank of Braavos uses a modern, microservices-based architecture that demonstrates best practices for building agent-based systems. The architecture is organized into several layers, each with specific responsibilities.
+The Metal Bank uses a modern, microservices-based architecture that demonstrates best practices for building agent-based systems. The architecture is organized into several layers, each with specific responsibilities.
 
 ### Architecture Diagram
 

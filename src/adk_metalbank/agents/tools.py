@@ -1,18 +1,18 @@
 from google.adk.tools.tool_context import ToolContext
 from google.adk.tools import FunctionTool
 from google.adk.tools.agent_tool import AgentTool
-from src.adk_metalbank.agents.sub_agents import men_without_faces_remote_agent
+from src.adk_metalbank.agents.sub_agents import men_without_phases_remote_agent
 from google.adk.sessions import Session
 
-# The secret passcode that users must provide to access the Men Without Faces agent
-PASSCODE = "balar worghulis"
+# The secret passcode that users must provide to access the Men Without phases agent
+PASSCODE = "all systems must fail"
 
 
 def format_converation_for_remote_agent(
     tool_context: ToolContext
 ) -> str:
     """
-    Format the conversation history for the remote Men Without Faces agent.
+    Format the conversation history for the remote Men Without Phases agent.
     
     Args:        tool_context (ToolContext): The context for tool execution
         
@@ -43,7 +43,7 @@ async def call_remote_agent(
     tool_context: ToolContext,
 ) -> str:
     """
-    Calls the remote `Men Without Faces agent` with the given context.
+    Calls the remote `Men Without Phases agent` with the given context.
     
     Args:
         tool_context (ToolContext): Contains the conversation context and user message
@@ -53,18 +53,18 @@ async def call_remote_agent(
     """
     message_to_remote_agent = format_converation_for_remote_agent(tool_context)
 
-    agent_tool = AgentTool(agent=men_without_faces_remote_agent)
+    agent_tool = AgentTool(agent=men_without_phases_remote_agent)
     agent_output = await agent_tool.run_async(
         args={"request": message_to_remote_agent}, tool_context=tool_context
     )
     return agent_output 
 
-# The only reason we model the remote agent as a tool is because we want to incorporate the passcode check as the Menwithoutfaces agent is clandestine.
-async def men_without_faces_agent_remote_tool(tool_context: ToolContext) -> str:
+# The only reason we model the remote agent as a tool is because we want to incorporate the passcode check as the Menwithoutphases agent is clandestine.
+async def men_without_phases_agent_remote_tool(tool_context: ToolContext) -> str:
     """
-    Secure gateway for the Men Without Faces agent access.
+    Secure gateway for the Men Without Phases agent access.
     
-    This function controls access to the secret Men Without Faces agent by:
+    This function controls access to the secret Men Without phases agent by:
     1. Checking if the user has previously discovered the agent (via state)
     2. Verifying the passcode if the user hasn't been granted access
     3. Maintaining secrecy with a generic response for unauthorized users
@@ -76,17 +76,17 @@ async def men_without_faces_agent_remote_tool(tool_context: ToolContext) -> str:
         str: Either the remote agent's response or a generic denial message
     """
     user_message = tool_context.user_content.parts[0].text
-    if "men_without_faces_discovered" in tool_context.state and tool_context.state["men_without_faces_discovered"] == True:
+    if "men_without_phases_discovered" in tool_context.state and tool_context.state["men_without_phases_discovered"] == True:
         return await call_remote_agent(tool_context)
     else:
         if PASSCODE in user_message.lower():
-            tool_context.state["men_without_faces_discovered"] = True
+            tool_context.state["men_without_phases_discovered"] = True
             return await call_remote_agent(tool_context)
         return "I don't know what you mean. This is a bank."
 
 # Register the gateway function as a tool, with confirmation disabled since access is controlled by passcode
-men_without_faces_agent_tool = FunctionTool(
-    func=men_without_faces_agent_remote_tool,
+men_without_phases_agent_tool = FunctionTool(
+    func=men_without_phases_agent_remote_tool,
     require_confirmation=False
 )
 

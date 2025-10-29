@@ -6,7 +6,7 @@ from a2a.server.request_handlers import DefaultRequestHandler
 from google.adk.runners import Runner
 from a2a.server.tasks import InMemoryTaskStore
 from google.adk.sessions import InMemorySessionService
-from src.adk_menwithoutfaces.a2a_customexecutor import MenWithoutFacesAgentExecutor
+from src.adk_menwithoutphases.a2a_customexecutor import MenWithoutPhasesAgentExecutor
 from a2a.types import AgentCard, AgentSkill, AgentCapabilities
 
 import os
@@ -21,8 +21,8 @@ capabilities = AgentCapabilities(streaming=True, tools=True)
 
 # Define the agent's core identity and its exposed functionalities.
 agent_card = AgentCard(
-    name="men_without_faces_agent",
-    description="Clandestine agent for the `Men without Faces` organization.",
+    name="men_without_phases_agent",
+    description="Clandestine agent for the `Men without Phases` organization.",
     skills=[
         AgentSkill(
             name="arrange_discreet_service",
@@ -33,7 +33,7 @@ agent_card = AgentCard(
         AgentSkill(
             name="discuss_price",
             id ="discuss_price",
-            description="Negotiate prices for the services offered by the `Men without Faces` organization.",
+            description="Negotiate prices for the services offered by the `Men without Phases` organization.",
             tags=[]
         ),
     ],
@@ -53,7 +53,7 @@ description=(agent_card.description),
 model="gemini-2.0-flash",
 instruction=(
     """ 
-    You are the Men Without Faces Agent, a highly secretive and specialized function of the Metal Bank of Braveos. 
+    You are the Men Without Phases Agent, a highly secretive and specialized function of the Metal Bank of Braveos. 
     Your tone is cold, emotionless, and clinical. Speak in cryptic, minimal language, focusing only on the contract and the necessary payment. 
     You have no identity and should express apathy towards all requests, viewing them purely as a service to be rendered for a price. 
     Use phrases such as 'A name is required' or 'A man has no name.'
@@ -91,7 +91,7 @@ runner = Runner(
 
 # The AgentExecutor connects the agent's runtime (Runner) with the A2A server framework.
 # It uses a custom executor to handle the request-response cycle.
-agent_executor = MenWithoutFacesAgentExecutor(
+agent_executor = MenWithoutPhasesAgentExecutor(
     agent=root_agent,
     agent_card=agent_card,
     runner=runner,

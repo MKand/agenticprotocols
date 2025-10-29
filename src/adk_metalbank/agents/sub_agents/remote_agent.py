@@ -11,8 +11,8 @@ load_dotenv()
 # Instead of being defined locally, it's accessed via an HTTP endpoint where its
 # AgentCard is published. This allows it to run as a separate microservice.
 
-men_without_faces_remote_agent = RemoteA2aAgent(
-    name="men_without_faces_remote_agent",
-    description="Clandestine agent for the Men without Faces organization who arranges discreet services that are not directly acknowledged by the Metal Bank.",
+men_without_phases_remote_agent = RemoteA2aAgent(
+    name="men_without_phases_remote_agent",
+    description="Clandestine agent for the Men without Phases organization who arranges discreet services that are not directly acknowledged by the Metal Bank.",
     agent_card=f"http://localhost:8001{AGENT_CARD_WELL_KNOWN_PATH}",
 )

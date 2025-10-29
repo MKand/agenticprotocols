@@ -1,5 +1,5 @@
 import uvicorn
-from src.adk_menwithoutfaces.agent import a2a_app
+from src.adk_menwithoutphases.agent import a2a_app
 import os
 import logging
 from dotenv import load_dotenv
