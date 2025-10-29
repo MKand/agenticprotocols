@@ -1,6 +1,6 @@
 # Model Context Protocol (MCP) Demo
 
-This demo walks through the implementation and usage of the Model Context Protocol (MCP) using examples from the Metal Bank of Braavos project. Instead of duplicating code, this guide links directly to the implementation files for reference.
+This demo walks through the implementation and usage of the Model Context Protocol (MCP) using examples from the Metal Bank project. Instead of duplicating code, this guide links directly to the implementation files for reference.
 
 ## Part 1: Understanding MCP Basics
 
@@ -77,9 +77,9 @@ This project demonstrates A2A communication between agents, with an interesting 
 
 ### Standard A2A Implementation
 
-The Men Without Faces service is implemented as a standalone A2A-enabled agent:
+The Men Without phases service is implemented as a standalone A2A-enabled agent:
 
-📁 See implementation: [src/adk_menwithoutfaces/agent.py](src/adk_menwithoutfaces/agent.py)
+📁 See implementation: [src/adk_menwithoutphases/agent.py](src/adk_menwithoutphases/agent.py)
 
 Key Features:
 
