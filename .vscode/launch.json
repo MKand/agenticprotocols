@@ -28,10 +28,10 @@
             "justMyCode": false
         },
          {
-            "name": "Men Without Faces Remote Agent",
+            "name": "Men Without Phases Remote Agent",
             "type": "debugpy",
             "request": "launch",
-            "module": "src.adk_menwithoutfaces.main",
+            "module": "src.adk_menwithoutphases.main",
             "env": {
                 "PORT": "8001",
             },
