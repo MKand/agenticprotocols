@@ -7,7 +7,7 @@ logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
 
 # Define MCP server
-mcp = FastMCP("Westrosi entity stats for loans")
+mcp = FastMCP("Entity stats for loans")
 
 BACKGROUND_STATS = None
 
